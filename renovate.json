@@ -1,0 +1,15 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:base",
+    ":semanticCommits",
+    ":combinePatchMinorReleases",
+    ":enableVulnerabilityAlerts",
+    ":automergeLinters",
+    ":automergeTesters",
+    ":automergeTypes",
+    ":prConcurrentLimitNone",
+    ":prConcurrentLimit20"
+  ],
+  "platformAutomerge": true
+}
