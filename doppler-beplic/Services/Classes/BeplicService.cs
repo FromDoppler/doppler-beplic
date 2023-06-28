@@ -1,10 +1,8 @@
-// unset:error
-
+using System.Net;
 using DopplerBeplic.Models;
 using DopplerBeplic.Models.DTO;
 using Newtonsoft.Json;
 using RestSharp;
-using System.Net;
 
 namespace DopplerBeplic.Services.Classes
 {
@@ -13,13 +11,13 @@ namespace DopplerBeplic.Services.Classes
         public UserCreationResponse CreateUser(UserCreationDTO accountData, string authToken)
         {
             accountData.Room ??= new UserCreationRoom
+            {
+                RoomName = "Sala A",
+                Group = new RoomGroup
                 {
-                    RoomName = "Sala A",
-                    Group = new RoomGroup
-                    {
-                        GroupName = "Grupo A"
-                    }
-                };
+                    GroupName = "Grupo A"
+                }
+            };
 
             accountData.Plan ??= new UserCreationPlan
             {
@@ -28,7 +26,7 @@ namespace DopplerBeplic.Services.Classes
                 MessageLimit = 1000
             };
 
-            var response = PostResource<UserCreationDTO>("/customer", accountData, authToken);
+            var response = PostResource("/customer", accountData, authToken);
 
             var result = new UserCreationResponse();
             if (response.IsSuccessStatusCode)
@@ -39,7 +37,7 @@ namespace DopplerBeplic.Services.Classes
             }
             else
             {
-                result.Success=false;
+                result.Success = false;
                 dynamic? deserealizedResponse = JsonConvert.DeserializeObject(response.Content ?? "");
                 result.ErrorStatus = deserealizedResponse?.errors?.status;
                 result.Error = deserealizedResponse?.errors?.detail;
@@ -56,7 +54,7 @@ namespace DopplerBeplic.Services.Classes
             return client;
         }
 
-        private static RestResponse PostResource<T> (string resource, object body, string authToken)
+        private static RestResponse PostResource(string resource, object body, string authToken)
         {
             var client = GetClient();
             var request = new RestRequest(resource, Method.Post);

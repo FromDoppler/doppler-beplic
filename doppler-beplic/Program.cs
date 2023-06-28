@@ -1,10 +1,8 @@
-// unset:error
-
+using System.Globalization;
 using DopplerBeplic.Models.DTO;
 using DopplerBeplic.Services.Classes;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 

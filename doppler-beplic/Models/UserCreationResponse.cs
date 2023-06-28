@@ -1,5 +1,3 @@
-// unset:error
-
 namespace DopplerBeplic.Models
 {
     public class UserCreationResponse

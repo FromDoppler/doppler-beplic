@@ -17,7 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc Files", "Misc Files", 
 		verify-w-docker.sh = verify-w-docker.sh
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DopplerBeplic", "doppler-beplic\DopplerBeplic.csproj", "{6F718408-F379-4549-8D3E-44FC614F85AD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "doppler-beplic", "doppler-beplic\doppler-beplic.csproj", "{6F718408-F379-4549-8D3E-44FC614F85AD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
