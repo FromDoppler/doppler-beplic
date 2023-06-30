@@ -25,10 +25,9 @@ app.UseHttpsRedirection();
 
 app.MapPost("/account", Results<Created<string>, BadRequest<string>> (
     BeplicService beplicService,
-    [FromBody] UserCreationDTO body,
-    [FromHeader(Name = "Authorization")] string authorization) =>
+    [FromBody] UserCreationDTO body) =>
 {
-    var response = beplicService.CreateUser(body, authorization);
+    var response = beplicService.CreateUser(body);
 
     return response.Success ?
         TypedResults.Created("/", string.Format(CultureInfo.InvariantCulture, "User created with ID:{0}", response.CustomerId))

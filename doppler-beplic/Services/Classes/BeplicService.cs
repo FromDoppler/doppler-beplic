@@ -8,7 +8,8 @@ namespace DopplerBeplic.Services.Classes
 {
     public class BeplicService
     {
-        public UserCreationResponse CreateUser(UserCreationDTO accountData, string authToken)
+        private readonly BeplicSdk _sdk = new BeplicSdk();
+        public UserCreationResponse CreateUser(UserCreationDTO accountData)
         {
             accountData.Room ??= new UserCreationRoom
             {
@@ -26,7 +27,7 @@ namespace DopplerBeplic.Services.Classes
                 MessageLimit = 1000
             };
 
-            var response = PostResource("/customer", accountData, authToken);
+            var response = _sdk.PostResource("v1/integra/customer", accountData);
 
             var result = new UserCreationResponse();
             if (response.IsSuccessStatusCode)
@@ -44,25 +45,6 @@ namespace DopplerBeplic.Services.Classes
             }
 
             return result;
-        }
-
-        private static RestClient GetClient()
-        {
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls13;
-
-            var client = new RestClient("https://api.beplic.io/v1/integra/");
-            return client;
-        }
-
-        private static RestResponse PostResource(string resource, object body, string authToken)
-        {
-            var client = GetClient();
-            var request = new RestRequest(resource, Method.Post);
-            request.AddJsonBody(body);
-            request.AddHeader("Content-Type", "application/json");
-            request.AddHeader("Authorization", authToken);
-
-            return client.Execute(request);
         }
     }
 }
