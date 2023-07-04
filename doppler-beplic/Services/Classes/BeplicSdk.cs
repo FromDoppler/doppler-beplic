@@ -63,7 +63,7 @@ namespace DopplerBeplic.Services.Classes
 
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
             AccessToken = content.access_token.ToString();
-            ExpirationDate = DateTime.UtcNow.AddMinutes(content.expires_in);
+            ExpirationDate = DateTime.UtcNow.AddSeconds(content.expires_in);
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
         }
 
