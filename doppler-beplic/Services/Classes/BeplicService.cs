@@ -1,30 +1,37 @@
-using System.Net;
 using DopplerBeplic.Models;
+using DopplerBeplic.Models.Config;
 using DopplerBeplic.Models.DTO;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using RestSharp;
 
 namespace DopplerBeplic.Services.Classes
 {
     public class BeplicService
     {
-        private readonly BeplicSdk _sdk = new BeplicSdk();
+        private readonly BeplicSdk _sdk;
+        private readonly DefaulValuesOptions _options;
+
+        public BeplicService(IOptions<DefaulValuesOptions> options, BeplicSdk sdk)
+        {
+            _options = options.Value;
+            _sdk = sdk;
+        }
         public UserCreationResponse CreateUser(UserCreationDTO accountData)
         {
             accountData.Room ??= new UserCreationRoom
             {
-                RoomName = "Sala A",
+                RoomName = _options.Room.Name,
                 Group = new RoomGroup
                 {
-                    GroupName = "Grupo A"
+                    GroupName = _options.Room.Group
                 }
             };
 
             accountData.Plan ??= new UserCreationPlan
             {
-                IdPlan = 5,
-                PlanName = "free",
-                MessageLimit = 1000
+                IdPlan = _options.Plan.Id,
+                PlanName = _options.Plan.Name,
+                MessageLimit = _options.Plan.MessageLimit
             };
 
             var response = _sdk.PostResource("v1/integra/customer", accountData);
