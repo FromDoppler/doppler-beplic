@@ -1,5 +1,7 @@
 using System.Net;
 using System.Security.Authentication;
+using DopplerBeplic.Models.Config;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RestSharp;
 
@@ -7,13 +9,14 @@ namespace DopplerBeplic.Services.Classes
 {
     public class BeplicSdk
     {
-        private const string API_URL = "https://qa.beplic.io/";
+        private readonly ApiConnectionOptions _options;
         public string? AccessToken { get; private set; }
         public DateTime? ExpirationDate { get; private set; }
 
         private readonly RestClient _client;
-        public BeplicSdk()
+        public BeplicSdk(IOptions<ApiConnectionOptions> options)
         {
+            _options = options.Value;
             _client = GetClient();
             Authenticate();
         }
@@ -30,11 +33,11 @@ namespace DopplerBeplic.Services.Classes
             return _client.Execute(request);
         }
 
-        private static RestClient GetClient()
+        private RestClient GetClient()
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls13;
 
-            return new RestClient(API_URL);
+            return new RestClient(_options.BaseUrl);
         }
 
         private void Authenticate()
@@ -43,8 +46,8 @@ namespace DopplerBeplic.Services.Classes
             request.AddHeader("Content-Type", "application/json");
             request.AddJsonBody(new
             {
-                username = "integraciones@fromdoppler.com",
-                password = "******",
+                username = _options.User,
+                password = _options.Password,
                 rememberMe = false
             }, ContentType.Json);
 
