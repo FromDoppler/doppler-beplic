@@ -5,11 +5,15 @@ namespace DopplerBeplic.Tests;
 internal sealed class PlaygroundApplication : WebApplicationFactory<Program>
 {
     private readonly string _environment;
+    private readonly List<Action<IServiceCollection>> _configureDelegates = new List<Action<IServiceCollection>>();
 
     public PlaygroundApplication(string environment = "Development")
     {
         _environment = environment;
     }
+
+    public void ConfigureServices(Action<IServiceCollection> configureDelegate)
+        => _configureDelegates.Add(configureDelegate);
 
     protected override IHost CreateHost(IHostBuilder builder)
     {
@@ -17,7 +21,10 @@ internal sealed class PlaygroundApplication : WebApplicationFactory<Program>
 
         builder.ConfigureServices(services =>
         {
-            // TODO: Add mock/test services to the builder here
+            foreach (var configure in _configureDelegates)
+            {
+                configure(services);
+            }
         });
 
         return base.CreateHost(builder);
