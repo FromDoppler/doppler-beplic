@@ -6,7 +6,13 @@ using Newtonsoft.Json;
 
 namespace DopplerBeplic.Services.Classes
 {
-    public class BeplicService
+    // TODO: move to his own file based on system architecture
+    public interface IBeplicService
+    {
+        UserCreationResponse CreateUser(UserCreationDTO accountData);
+    }
+
+    public class BeplicService : IBeplicService
     {
         private readonly BeplicSdk _sdk;
         private readonly DefaulValuesOptions _options;

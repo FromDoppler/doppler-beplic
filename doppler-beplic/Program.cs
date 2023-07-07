@@ -42,7 +42,7 @@ builder.Services.Configure<DefaulValuesOptions>(
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddDopplerSecurity();
 builder.Services.AddSingleton<BeplicSdk>();
-builder.Services.AddSingleton<BeplicService>();
+builder.Services.AddSingleton<IBeplicService, BeplicService>();
 builder.Services.AddSwaggerGen(c =>
 {
     c.AddSecurityDefinition("Bearer",
@@ -78,7 +78,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.MapPost("/account", Results<Created<string>, BadRequest<string>> (
-    BeplicService beplicService,
+    IBeplicService beplicService,
     [FromBody] UserCreationDTO body) =>
 {
     var response = beplicService.CreateUser(body);
