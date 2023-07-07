@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -43,6 +42,9 @@ public static class DopplerSecurityServiceCollectionExtensions
                     })
                     .RequireAuthenticatedUser());
 
+        services.AddAuthentication()
+            .AddJwtBearer();
+
         services.AddOptions<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme)
             .Configure<IOptions<DopplerSecurityOptions>>((o, securityOptions) =>
             {
@@ -52,36 +54,6 @@ public static class DopplerSecurityServiceCollectionExtensions
                     IssuerSigningKeys = securityOptions.Value.SigningKeys,
                     ValidateIssuer = false,
                     ValidateAudience = false,
-                };
-            });
-
-        services.AddAuthentication()
-            .AddJwtBearer(opt =>
-            {
-                opt.IncludeErrorDetails = true;
-                opt.Events = new JwtBearerEvents()
-                {
-                    OnAuthenticationFailed = context =>
-                    {
-                        var err = context.Exception.ToString();
-
-                        Console.WriteLine(err);
-                        return Task.CompletedTask;
-                    },
-                    OnTokenValidated = ctx =>
-                    {
-                        Console.WriteLine();
-                        Console.WriteLine("Claims from the access token");
-                        if (ctx?.Principal != null)
-                        {
-                            foreach (var claim in ctx.Principal.Claims)
-                            {
-                                Console.WriteLine($"{claim.Type} - {claim.Value}");
-                            }
-                        }
-                        Console.WriteLine();
-                        return Task.CompletedTask;
-                    }
                 };
             });
 
