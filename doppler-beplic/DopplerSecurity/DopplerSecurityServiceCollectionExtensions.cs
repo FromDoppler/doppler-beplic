@@ -61,13 +61,13 @@ public static class DopplerSecurityServiceCollectionExtensions
                 opt.IncludeErrorDetails = true;
                 opt.Events = new JwtBearerEvents()
                 {
-                    //OnAuthenticationFailed = context =>
-                    //{
-                    //    var err = context.Exception.ToString();
+                    OnAuthenticationFailed = context =>
+                    {
+                        var err = context.Exception.ToString();
 
-                    //    Console.WriteLine(err);
-                    //    return Task.CompletedTask;
-                    //},
+                        Console.WriteLine(err);
+                        return Task.CompletedTask;
+                    },
                     OnTokenValidated = ctx =>
                     {
                         Console.WriteLine();

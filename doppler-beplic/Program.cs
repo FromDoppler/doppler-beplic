@@ -1,9 +1,11 @@
 using System.Globalization;
+using DopplerBeplic.DopplerSecurity;
 using DopplerBeplic.Models.Config;
 using DopplerBeplic.Models.DTO;
 using DopplerBeplic.Services.Classes;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,7 +40,30 @@ builder.Services.Configure<DefaulValuesOptions>(
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.AddSecurityDefinition("Bearer",
+        new OpenApiSecurityScheme
+        {
+            In = ParameterLocation.Header,
+            Description = "Please enter the token into field as 'Bearer {token}'",
+            Name = "Authorization",
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = "Bearer"
+        });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference { Id = "Bearer", Type = ReferenceType.SecurityScheme },
+                },
+                Array.Empty<string>()
+            }
+        });
+});
+builder.Services.AddDopplerSecurity();
+
 builder.Services.AddSingleton<BeplicSdk>();
 builder.Services.AddSingleton<BeplicService>();
 
@@ -52,6 +77,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapPost("/account", Results<Created<string>, BadRequest<string>> (
     BeplicService beplicService,
@@ -69,6 +96,7 @@ app.MapPost("/account", Results<Created<string>, BadRequest<string>> (
                 response.Error));
 })
 .WithName("CreateUser")
-.WithOpenApi();
+.WithOpenApi()
+.RequireAuthorization(Policies.OnlySuperuser);
 
 app.Run();
