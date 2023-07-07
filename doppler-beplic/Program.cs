@@ -40,6 +40,9 @@ builder.Services.Configure<DefaulValuesOptions>(
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddDopplerSecurity();
+builder.Services.AddSingleton<BeplicSdk>();
+builder.Services.AddSingleton<BeplicService>();
 builder.Services.AddSwaggerGen(c =>
 {
     c.AddSecurityDefinition("Bearer",
@@ -62,10 +65,6 @@ builder.Services.AddSwaggerGen(c =>
             }
         });
 });
-builder.Services.AddDopplerSecurity();
-
-builder.Services.AddSingleton<BeplicSdk>();
-builder.Services.AddSingleton<BeplicService>();
 
 var app = builder.Build();
 
@@ -77,8 +76,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseAuthentication();
-app.UseAuthorization();
 
 app.MapPost("/account", Results<Created<string>, BadRequest<string>> (
     BeplicService beplicService,
