@@ -44,8 +44,10 @@ public class ConfigureDopplerSecurityOptions : IConfigureOptions<DopplerSecurity
             DopplerSecurityDefaults.PublicKeysFilenameRegexDefaultConfigValue));
 #pragma warning restore CS8604 // Possible null reference argument.
 
+#pragma warning disable CS8604 // Possible null reference argument.
         var files = _fileProvider.GetDirectoryContents(path)
             .Where(x => !x.IsDirectory && filenameRegex.IsMatch(x.Name));
+#pragma warning restore CS8604 // Possible null reference argument.
 
         var publicKeys = files
             .Select(ReadToEnd)

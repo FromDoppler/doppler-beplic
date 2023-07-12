@@ -21,7 +21,9 @@ public partial class IsSuperUserAuthorizationHandler : AuthorizationHandler<Dopp
             return false;
         }
 
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
         var isSuperUser = bool.Parse(context.User.FindFirst(c => c.Type.Equals(DopplerSecurityDefaults.SuperuserJwtKey, StringComparison.Ordinal)).Value);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
         return isSuperUser;
     }
 }
