@@ -77,18 +77,18 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapPost("/account", Results<Created<string>, BadRequest<string>> (
+app.MapPost("/account", async Task<Results<Created<string>, BadRequest<string>>> (
     IBeplicService beplicService,
     [FromBody] UserCreationDTO body) =>
 {
-    var response = beplicService.CreateUser(body);
+    var response = await beplicService.CreateUser(body);
 
     return response.Success ?
         TypedResults.Created("/", string.Format(CultureInfo.InvariantCulture, "User created with ID:{0}", response.CustomerId))
         : TypedResults.BadRequest(
             string.Format(
                 CultureInfo.InvariantCulture,
-                "Failed to create user. ErrorStatus: {0} Error:{1}",
+                "Failed to create user. ErrorStatus: {0} Error: {1}",
                 response.ErrorStatus,
                 response.Error));
 })

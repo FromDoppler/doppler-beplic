@@ -81,7 +81,7 @@ public class AuthorizationTest
         var beplicServiceMock = new Mock<IBeplicService>();
         beplicServiceMock
             .Setup(x => x.CreateUser(It.IsAny<UserCreationDTO>()))
-            .Returns(new UserCreationResponse() { Success = true });
+            .ReturnsAsync(new UserCreationResponse() { Success = true });
         application.ConfigureServices(services => services.AddSingleton(beplicServiceMock.Object));
 
         using var client = application.CreateClient();

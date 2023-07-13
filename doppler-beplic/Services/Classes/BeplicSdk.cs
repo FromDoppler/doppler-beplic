@@ -18,19 +18,18 @@ namespace DopplerBeplic.Services.Classes
         {
             _options = options.Value;
             _client = GetClient();
-            Authenticate();
         }
 
-        public RestResponse PostResource(string resource, object body)
+        public async Task<RestResponse> PostResource(string resource, object body)
         {
-            EnsureAuthentication();
+            await EnsureAuthentication();
 
             var request = new RestRequest(resource, Method.Post);
             request.AddJsonBody(body);
             request.AddHeader("Content-Type", "application/json");
             request.AddHeader("Authorization", "Bearer " + AccessToken);
 
-            return _client.Execute(request);
+            return await _client.ExecuteAsync(request);
         }
 
         private RestClient GetClient()
@@ -40,7 +39,7 @@ namespace DopplerBeplic.Services.Classes
             return new RestClient(_options.BaseUrl);
         }
 
-        private void Authenticate()
+        private async Task Authenticate()
         {
             var request = new RestRequest("auth/login", Method.Post);
             request.AddHeader("Content-Type", "application/json");
@@ -51,7 +50,7 @@ namespace DopplerBeplic.Services.Classes
                 rememberMe = false
             }, ContentType.Json);
 
-            var response = _client.Execute(request);
+            var response = await _client.ExecuteAsync(request);
 
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             dynamic content = response.IsSuccessStatusCode
@@ -70,11 +69,11 @@ namespace DopplerBeplic.Services.Classes
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
         }
 
-        private void EnsureAuthentication()
+        private async Task EnsureAuthentication()
         {
             if (AccessToken is null || (ExpirationDate is not null && ExpirationDate < DateTime.UtcNow))
             {
-                Authenticate();
+                await Authenticate();
             }
         }
     }

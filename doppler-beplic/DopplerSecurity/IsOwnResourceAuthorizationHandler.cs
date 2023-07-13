@@ -23,12 +23,14 @@ public partial class IsOwnResourceAuthorizationHandler : AuthorizationHandler<Do
             return false;
         }
 
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
         if (routeData.Values.TryGetValue("accountId", out var accountId) && accountId?.ToString() == GetTokenNameIdentifier(context.User))
         {
             // TODO: In case of using different public keys, for example Doppler and Relay,
             // it is necessary to check token Issuer information, to validate right origin.
             return true;
         }
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
         if (routeData.Values.TryGetValue("accountname", out var accountname) && accountname?.ToString() == GetTokenUniqueName(context.User))
         {
@@ -40,12 +42,14 @@ public partial class IsOwnResourceAuthorizationHandler : AuthorizationHandler<Do
         return false;
     }
 
+#pragma warning disable CS8603 // Possible null reference return.
     private static string GetTokenUniqueName(ClaimsPrincipal user) =>
         user.FindFirst(c => c.Type == ClaimTypes.Name)?.Value;
 
     private static string GetTokenNameIdentifier(ClaimsPrincipal user) =>
         user.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
+#pragma warning restore CS8603 // Possible null reference return.
     private static bool TryGetRouteData(AuthorizationHandlerContext context, out RouteData? routeData)
     {
         // In my local environment with .NET 5
