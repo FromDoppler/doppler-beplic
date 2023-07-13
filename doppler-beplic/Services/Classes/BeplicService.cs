@@ -45,16 +45,46 @@ namespace DopplerBeplic.Services.Classes
             var result = new UserCreationResponse();
             if (response.IsSuccessStatusCode)
             {
-                result.Success = true;
-                dynamic? deserealizedResponse = JsonConvert.DeserializeObject(response.Content ?? "");
-                result.CustomerId = deserealizedResponse?.data?.idCustomer;
+                var deserealizedResponse = JsonConvert.DeserializeAnonymousType(response.Content ?? "",
+                    new
+                    {
+                        success = false,
+                        message = string.Empty,
+                        data = new
+                        {
+                            idCustomer = 0
+                        }
+                    });
+
+                result.Success = deserealizedResponse?.success ?? false;
+                result.Error = result.Success ? string.Empty : deserealizedResponse?.message;
+                result.CustomerId = deserealizedResponse?.data.idCustomer;
             }
             else
             {
+                var deserealizedResponse = JsonConvert.DeserializeAnonymousType(response.Content ?? "",
+                    new
+                    {
+                        errors = new[]
+                        {
+                                new {
+                                    status = string.Empty,
+                                    title = string.Empty,
+                                    detail = string.Empty,
+                                    source = new
+                                    {
+                                        pointer = string.Empty
+                                    }
+                                }
+                        }.ToList()
+                    });
+
+                //TODO: Verify with beplic if the array of errors it's realy needed.
+                var error = deserealizedResponse?.errors.FirstOrDefault();
+
                 result.Success = false;
-                dynamic? deserealizedResponse = JsonConvert.DeserializeObject(response.Content ?? "");
-                result.ErrorStatus = deserealizedResponse?.errors?.status;
-                result.Error = deserealizedResponse?.errors?.detail;
+                result.ErrorStatus = error?.status;
+                result.Error = error?.detail;
             }
 
             return result;
