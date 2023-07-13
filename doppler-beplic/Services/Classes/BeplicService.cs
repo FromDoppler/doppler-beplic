@@ -9,7 +9,7 @@ namespace DopplerBeplic.Services.Classes
     // TODO: move to his own file based on system architecture
     public interface IBeplicService
     {
-        UserCreationResponse CreateUser(UserCreationDTO accountData);
+        Task<UserCreationResponse> CreateUser(UserCreationDTO accountData);
     }
 
     public class BeplicService : IBeplicService
@@ -22,7 +22,7 @@ namespace DopplerBeplic.Services.Classes
             _options = options.Value;
             _sdk = sdk;
         }
-        public UserCreationResponse CreateUser(UserCreationDTO accountData)
+        public async Task<UserCreationResponse> CreateUser(UserCreationDTO accountData)
         {
             accountData.Room ??= new UserCreationRoom
             {
@@ -40,13 +40,15 @@ namespace DopplerBeplic.Services.Classes
                 MessageLimit = _options.Plan.MessageLimit
             };
 
-            var response = _sdk.PostResource("v1/integra/customer", accountData);
-
             var result = new UserCreationResponse();
-            if (response.IsSuccessStatusCode)
+
+            try
             {
-                var deserealizedResponse = JsonConvert.DeserializeAnonymousType(response.Content ?? "",
-                    new
+                var response = await _sdk.PostResource("v1/integra/customer", accountData);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var deserealizedResponse = JsonConvert.DeserializeAnonymousType(response.Content ?? "", new
                     {
                         success = false,
                         message = string.Empty,
@@ -56,17 +58,17 @@ namespace DopplerBeplic.Services.Classes
                         }
                     });
 
-                result.Success = deserealizedResponse?.success ?? false;
-                result.Error = result.Success ? string.Empty : deserealizedResponse?.message;
-                result.CustomerId = deserealizedResponse?.data.idCustomer;
-            }
-            else
-            {
-                var deserealizedResponse = JsonConvert.DeserializeAnonymousType(response.Content ?? "",
-                    new
-                    {
-                        errors = new[]
+                    result.Success = deserealizedResponse?.success ?? false;
+                    result.Error = result.Success ? string.Empty : deserealizedResponse?.message;
+                    result.CustomerId = deserealizedResponse?.data.idCustomer;
+                }
+                else
+                {
+                    var deserealizedResponse = JsonConvert.DeserializeAnonymousType(response.Content ?? "",
+                        new
                         {
+                            errors = new[]
+                            {
                                 new {
                                     status = string.Empty,
                                     title = string.Empty,
@@ -76,16 +78,24 @@ namespace DopplerBeplic.Services.Classes
                                         pointer = string.Empty
                                     }
                                 }
-                        }.ToList()
-                    });
+                            }.ToList()
+                        });
 
-                //TODO: Verify with beplic if the array of errors it's realy needed.
-                var error = deserealizedResponse?.errors.FirstOrDefault();
+                    //TODO: Verify with beplic if the array of errors it's realy needed.
+                    var error = deserealizedResponse?.errors.FirstOrDefault();
 
-                result.Success = false;
-                result.ErrorStatus = error?.status;
-                result.Error = error?.detail;
+                    result.Success = false;
+                    result.ErrorStatus = error?.status;
+                    result.Error = error?.detail;
+                }
             }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.Error = ex.Message;
+            }
+
+            
 
             return result;
         }
