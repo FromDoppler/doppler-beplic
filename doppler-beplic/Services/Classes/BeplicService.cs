@@ -95,7 +95,7 @@ namespace DopplerBeplic.Services.Classes
                 result.Error = ex.Message;
             }
 
-            
+
 
             return result;
         }
