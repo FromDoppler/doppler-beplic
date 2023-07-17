@@ -4,8 +4,8 @@ namespace DopplerBeplic.Models.Config
     {
         public const string Values = "DefaultValues";
 
-        public DefaultRoom Room { get; set; }
-        public DefaultPlan Plan { get; set; }
+        public DefaultRoom Room { get; set; } = new DefaultRoom();
+        public DefaultPlan Plan { get; set; } = new DefaultPlan();
     }
 
     public class DefaultRoom
