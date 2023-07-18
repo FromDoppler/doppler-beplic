@@ -1,4 +1,4 @@
-namespace DopplerBeplic.Models
+namespace DopplerBeplic.Models.Responses
 {
     public class UserCreationResponse
     {
