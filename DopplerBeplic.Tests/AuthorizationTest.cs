@@ -1,6 +1,5 @@
-
-using DopplerBeplic.Models;
 using DopplerBeplic.Models.DTO;
+using DopplerBeplic.Models.Responses;
 using DopplerBeplic.Services.Classes;
 
 namespace DopplerBeplic.Tests;
