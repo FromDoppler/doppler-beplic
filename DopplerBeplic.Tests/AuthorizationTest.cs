@@ -1,6 +1,6 @@
 using DopplerBeplic.Models.DTO;
 using DopplerBeplic.Models.Responses;
-using DopplerBeplic.Services.Classes;
+using DopplerBeplic.Services.Interfaces;
 
 namespace DopplerBeplic.Tests;
 
