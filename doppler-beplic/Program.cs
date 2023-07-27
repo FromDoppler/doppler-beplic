@@ -3,6 +3,7 @@ using DopplerBeplic.DopplerSecurity;
 using DopplerBeplic.Models.Config;
 using DopplerBeplic.Models.DTO;
 using DopplerBeplic.Services.Classes;
+using DopplerBeplic.Services.Interfaces;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
@@ -93,6 +94,48 @@ app.MapPost("/account", async Task<Results<Created<string>, BadRequest<string>>>
                 response.Error));
 })
 .WithName("CreateUser")
+.WithOpenApi()
+.RequireAuthorization(Policies.OnlySuperuser);
+
+app.MapPut("/user", async Task<Results<Ok<string>, BadRequest<string>>> (
+    IBeplicService beplicService,
+    [FromBody] UserAdminUpdateDTO body) =>
+{
+    var response = await beplicService.UpdateUserAdmin(body);
+
+    return response.Success ?
+        TypedResults.Ok(string.Format(
+            CultureInfo.InvariantCulture,
+            "User updated with CustomerId: {0} and UserId:{1}",
+            response.CustomerId,
+            response.UserId))
+        : TypedResults.BadRequest(
+            string.Format(
+                CultureInfo.InvariantCulture,
+                "Failed to update user. ErrorStatus: {0} Error: {1}",
+                response.ErrorStatus,
+                response.Error));
+})
+.WithName("UpdateUser")
+.WithOpenApi()
+.RequireAuthorization(Policies.OnlySuperuser);
+
+app.MapPut("/customer", async Task<Results<Ok<string>, BadRequest<string>>> (
+    IBeplicService beplicService,
+    [FromBody] CustomerUpdateDTO body) =>
+{
+    var response = await beplicService.UpdateCustomer(body);
+
+    return response.Success ?
+        TypedResults.Ok(string.Format(CultureInfo.InvariantCulture, "Company updated for CustomerId: {0}", response.CustomerId))
+        : TypedResults.BadRequest(
+            string.Format(
+                CultureInfo.InvariantCulture,
+                "Failed to update user. ErrorStatus: {0} Error: {1}",
+                response.ErrorStatus,
+                response.Error));
+})
+.WithName("UpdateCompany")
 .WithOpenApi()
 .RequireAuthorization(Policies.OnlySuperuser);
 
