@@ -1,17 +1,12 @@
 using DopplerBeplic.Models.Config;
 using DopplerBeplic.Models.DTO;
 using DopplerBeplic.Models.Responses;
+using DopplerBeplic.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
 namespace DopplerBeplic.Services.Classes
 {
-    // TODO: move to his own file based on system architecture
-    public interface IBeplicService
-    {
-        Task<UserCreationResponse> CreateUser(UserCreationDTO accountData);
-    }
-
     public class BeplicService : IBeplicService
     {
         private readonly BeplicSdk _sdk;
