@@ -120,11 +120,11 @@ app.MapPut("/user", async Task<Results<Ok<string>, BadRequest<string>>> (
 .WithOpenApi()
 .RequireAuthorization(Policies.OnlySuperuser);
 
-app.MapPut("/customer", async Task<Results<Ok<string>, BadRequest<string>>> (
+app.MapPut("/company", async Task<Results<Ok<string>, BadRequest<string>>> (
     IBeplicService beplicService,
-    [FromBody] CustomerUpdateDTO body) =>
+    [FromBody] CompanyUpdateDTO body) =>
 {
-    var response = await beplicService.UpdateCustomer(body);
+    var response = await beplicService.UpdateCompany(body);
 
     return response.Success ?
         TypedResults.Ok(string.Format(CultureInfo.InvariantCulture, "Company updated for CustomerId: {0}", response.CustomerId))

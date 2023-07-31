@@ -93,9 +93,9 @@ namespace DopplerBeplic.Services.Classes
             return result;
         }
 
-        public async Task<CustomerUpdateResponse> UpdateCustomer(CustomerUpdateDTO customerData)
+        public async Task<CompanyUpdateResponse> UpdateCompany(CompanyUpdateDTO customerData)
         {
-            var result = new CustomerUpdateResponse();
+            var result = new CompanyUpdateResponse();
 
             try
             {
