@@ -7,7 +7,7 @@ namespace DopplerBeplic.Services.Interfaces
     {
         Task<UserCreationResponse> CreateUser(UserCreationDTO accountData);
 
-        Task<CustomerUpdateResponse> UpdateCustomer(CustomerUpdateDTO customerData);
+        Task<CompanyUpdateResponse> UpdateCompany(CompanyUpdateDTO customerData);
 
         Task<UserAdminUpdateResponse> UpdateUserAdmin(UserAdminUpdateDTO userAdminData);
     }
