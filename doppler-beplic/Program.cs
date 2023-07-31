@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text.Json.Serialization;
 using DopplerBeplic.DopplerSecurity;
 using DopplerBeplic.Models.Config;
 using DopplerBeplic.Models.DTO;
@@ -8,7 +9,6 @@ using DopplerBeplic.Services.Interfaces;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
-using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,7 +40,8 @@ builder.Services.Configure<ApiConnectionOptions>(
 builder.Services.Configure<DefaulValuesOptions>(
     builder.Configuration.GetSection(DefaulValuesOptions.Values));
 
-builder.Services.ConfigureHttpJsonOptions(o => {
+builder.Services.ConfigureHttpJsonOptions(o =>
+{
     o.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     o.SerializerOptions.WriteIndented = true;
     o.SerializerOptions.IncludeFields = true;
