@@ -1,7 +1,9 @@
 using System.Globalization;
+using System.Text.Json.Serialization;
 using DopplerBeplic.DopplerSecurity;
 using DopplerBeplic.Models.Config;
 using DopplerBeplic.Models.DTO;
+using DopplerBeplic.Models.Responses;
 using DopplerBeplic.Services.Classes;
 using DopplerBeplic.Services.Interfaces;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -37,6 +39,13 @@ builder.Services.Configure<ApiConnectionOptions>(
     builder.Configuration.GetSection(ApiConnectionOptions.Connection));
 builder.Services.Configure<DefaulValuesOptions>(
     builder.Configuration.GetSection(DefaulValuesOptions.Values));
+
+builder.Services.ConfigureHttpJsonOptions(o =>
+{
+    o.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+    o.SerializerOptions.WriteIndented = true;
+    o.SerializerOptions.IncludeFields = true;
+});
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -78,14 +87,14 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapPost("/account", async Task<Results<Created<string>, BadRequest<string>>> (
+app.MapPost("/account", async Task<Results<Created<UserCreationResponse>, BadRequest<string>>> (
     IBeplicService beplicService,
     [FromBody] UserCreationDTO body) =>
 {
     var response = await beplicService.CreateUser(body);
 
     return response.Success ?
-        TypedResults.Created("/", string.Format(CultureInfo.InvariantCulture, "User created with ID:{0}", response.CustomerId))
+        TypedResults.Created("/", response)
         : TypedResults.BadRequest(
             string.Format(
                 CultureInfo.InvariantCulture,
@@ -120,11 +129,11 @@ app.MapPut("/user", async Task<Results<Ok<string>, BadRequest<string>>> (
 .WithOpenApi()
 .RequireAuthorization(Policies.OnlySuperuser);
 
-app.MapPut("/customer", async Task<Results<Ok<string>, BadRequest<string>>> (
+app.MapPut("/company", async Task<Results<Ok<string>, BadRequest<string>>> (
     IBeplicService beplicService,
-    [FromBody] CustomerUpdateDTO body) =>
+    [FromBody] CompanyUpdateDTO body) =>
 {
-    var response = await beplicService.UpdateCustomer(body);
+    var response = await beplicService.UpdateCompany(body);
 
     return response.Success ?
         TypedResults.Ok(string.Format(CultureInfo.InvariantCulture, "Company updated for CustomerId: {0}", response.CustomerId))

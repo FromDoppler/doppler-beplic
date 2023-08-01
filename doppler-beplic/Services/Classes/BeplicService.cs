@@ -25,10 +25,14 @@ namespace DopplerBeplic.Services.Classes
                 Group = new RoomGroup
                 {
                     GroupName = _options.Room.Group
+                },
+                Channel = new RoomChannel
+                {
+                    ChannelName = _options.Room.Channel
                 }
             };
 
-            accountData.Plan ??= new UserCreationPlan
+            accountData.Customer.Plan ??= new UserCreationPlan
             {
                 IdPlan = _options.Plan.Id,
                 PlanName = _options.Plan.Name,
@@ -39,7 +43,7 @@ namespace DopplerBeplic.Services.Classes
 
             try
             {
-                var response = await _sdk.ExecuteResource("v1/integra/customer", accountData, RestSharp.Method.Post);
+                var response = await _sdk.ExecuteResource("/services/beplicconfigurationintegra/v1/integra/customers", accountData, RestSharp.Method.Post);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -49,13 +53,15 @@ namespace DopplerBeplic.Services.Classes
                         message = string.Empty,
                         data = new
                         {
-                            idCustomer = 0
+                            idCustomer = 0,
+                            accessToken = string.Empty
                         }
                     });
 
                     result.Success = deserealizedResponse?.success ?? false;
-                    result.Error = result.Success ? string.Empty : deserealizedResponse?.message;
+                    result.Error = result.Success ? null : deserealizedResponse?.message;
                     result.CustomerId = deserealizedResponse?.data.idCustomer;
+                    result.UserToken = deserealizedResponse?.data.accessToken;
                 }
                 else
                 {
@@ -93,9 +99,9 @@ namespace DopplerBeplic.Services.Classes
             return result;
         }
 
-        public async Task<CustomerUpdateResponse> UpdateCustomer(CustomerUpdateDTO customerData)
+        public async Task<CompanyUpdateResponse> UpdateCompany(CompanyUpdateDTO customerData)
         {
-            var result = new CustomerUpdateResponse();
+            var result = new CompanyUpdateResponse();
 
             try
             {

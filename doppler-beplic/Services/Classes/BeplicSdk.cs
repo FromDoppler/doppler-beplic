@@ -4,6 +4,7 @@ using DopplerBeplic.Models.Config;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RestSharp;
+using RestSharp.Serializers.NewtonsoftJson;
 
 namespace DopplerBeplic.Services.Classes
 {
@@ -35,7 +36,9 @@ namespace DopplerBeplic.Services.Classes
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls13;
 
-            return new RestClient(_options.BaseUrl);
+            return new RestClient(
+                _options.BaseUrl,
+                configureSerialization: s => s.UseNewtonsoftJson());
         }
 
         private async Task Authenticate()

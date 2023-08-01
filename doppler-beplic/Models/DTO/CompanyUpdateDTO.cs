@@ -1,11 +1,11 @@
 namespace DopplerBeplic.Models.DTO
 {
-    public class CustomerUpdateDTO
+    public class CompanyUpdateDTO
     {
-        public required CustomerUpdateData Customer { get; set; }
+        public required CompanyUpdateData Customer { get; set; }
     }
 
-    public class CustomerUpdateData
+    public class CompanyUpdateData
     {
         public string Cuit { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;

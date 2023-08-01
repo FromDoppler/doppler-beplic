@@ -6,5 +6,6 @@ namespace DopplerBeplic.Models.Responses
         public int? CustomerId { get; set; }
         public string? Error { get; set; }
         public string? ErrorStatus { get; set; }
+        public string? UserToken { get; set; }
     }
 }

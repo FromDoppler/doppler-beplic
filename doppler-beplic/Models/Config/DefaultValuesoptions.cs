@@ -14,6 +14,7 @@ namespace DopplerBeplic.Models.Config
 
         public string Name { get; set; } = string.Empty;
         public string Group { get; set; } = string.Empty;
+        public string Channel { get; set; } = string.Empty;
     }
 
     public class DefaultPlan
