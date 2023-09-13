@@ -19,25 +19,7 @@ namespace DopplerBeplic.Services.Classes
         }
         public async Task<UserCreationResponse> CreateUser(UserCreationDTO accountData)
         {
-            accountData.Room ??= new UserCreationRoom
-            {
-                RoomName = _options.Room.Name,
-                Group = new RoomGroup
-                {
-                    GroupName = _options.Room.Group
-                },
-                Channel = new RoomChannel
-                {
-                    ChannelName = _options.Room.Channel
-                }
-            };
-
-            accountData.Customer.Plan ??= new UserCreationPlan
-            {
-                IdPlan = _options.Plan.Id,
-                PlanName = _options.Plan.Name,
-                MessageLimit = _options.Plan.MessageLimit
-            };
+            accountData.Customer.Partner ??= _options.Customer.Partner;
 
             var result = new UserCreationResponse();
 

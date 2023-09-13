@@ -99,6 +99,6 @@ public class AuthorizationTest
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
         // TODo: do better verifications in another test different than AuthorizationTest
         beplicServiceMock.Verify(x => x.CreateUser(It.Is<UserCreationDTO>(accountData =>
-            accountData.Customer != null && accountData.Customer.Plan == null && accountData.Room == null)));
+            accountData.Customer != null && accountData.Customer.Plan == null)));
     }
 }
