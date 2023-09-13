@@ -6,8 +6,6 @@ namespace DopplerBeplic.Models.DTO
     {
         [JsonProperty("customer")]
         public required UserCreationCustomer Customer { get; set; }
-        [JsonProperty("room")]
-        public UserCreationRoom? Room { get; set; }
     }
 
     public class UserCreationCustomer
@@ -22,6 +20,8 @@ namespace DopplerBeplic.Models.DTO
         public string LegalName { get; set; } = string.Empty;
         [JsonProperty("idExternal")]
         public string IdExternal { get; set; } = string.Empty;
+        [JsonProperty("partner")]
+        public string Partner { get; set; } = string.Empty;
         [JsonProperty("apiKey")]
         public string ApiKey { get; set; } = string.Empty;
         [JsonProperty("plan")]
@@ -40,28 +40,6 @@ namespace DopplerBeplic.Models.DTO
         public string LastName { get; set; } = string.Empty;
         [JsonProperty("celphone")]
         public string Cellphone { get; set; } = string.Empty;
-    }
-
-    public class UserCreationRoom
-    {
-        [JsonProperty("name")]
-        public string? RoomName { get; set; }
-        [JsonProperty("group")]
-        public RoomGroup? Group { get; set; }
-        [JsonProperty("channel")]
-        public RoomChannel? Channel { get; set; }
-    }
-
-    public class RoomGroup
-    {
-        [JsonProperty("name")]
-        public string? GroupName { get; set; }
-    }
-
-    public class RoomChannel
-    {
-        [JsonProperty("name")]
-        public string? ChannelName { get; set; }
     }
 
     public class UserCreationPlan
