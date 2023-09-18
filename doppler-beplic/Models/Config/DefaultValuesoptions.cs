@@ -14,7 +14,7 @@ namespace DopplerBeplic.Models.Config
 
         public string Partner { get; set; } = "DOPPLER";
 
-        public string Address { get; set; } = string.Empty;
+        public string Address { get; set; } = "Sin definir";
     }
 
     public class DefaultPlan
