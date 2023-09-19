@@ -85,13 +85,19 @@ namespace DopplerBeplic.Services.Classes
             return result;
         }
 
-        public async Task<CompanyUpdateResponse> UpdateCompany(CompanyUpdateDTO customerData)
+        public async Task<CustomerUpdateResponse> UpdateCustomer(CustomerUpdateDTO customerData)
         {
-            var result = new CompanyUpdateResponse();
+            customerData.Customer.BusinessName ??= _options.Customer.BusinessName;
+            customerData.Customer.LegalName ??= _options.Customer.LegalName;
+            customerData.Customer.Address ??= _options.Customer.Address;
+            customerData.Customer.Cuit ??= _options.Customer.Cuit;
+            customerData.Customer.Status = ParseCustomerStatus(customerData);
+
+            var result = new CustomerUpdateResponse();
 
             try
             {
-                var response = await _sdk.ExecuteResource("v1/integra/customer", customerData, RestSharp.Method.Put);
+                var response = await _sdk.ExecuteResource("/services/beplicconfigurationintegra/v1/integra/customers", customerData, RestSharp.Method.Put);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -145,13 +151,25 @@ namespace DopplerBeplic.Services.Classes
             return result;
         }
 
+        private string ParseCustomerStatus(CustomerUpdateDTO customerData)
+        {
+            if (string.IsNullOrEmpty(customerData.Customer.Status))
+            {
+                customerData.Customer.Status = customerData.Customer.IsCancelated ?? false
+                    ? _options.CustomerStatus.Low
+                    : customerData.Customer.IsBlocked ?? false ? _options.CustomerStatus.Inactive : _options.CustomerStatus.Active;
+            }
+
+            return customerData.Customer.Status;
+        }
+
         public async Task<UserAdminUpdateResponse> UpdateUserAdmin(UserAdminUpdateDTO userAdminData)
         {
             var result = new UserAdminUpdateResponse();
 
             try
             {
-                var response = await _sdk.ExecuteResource("v1/integra/user", userAdminData, RestSharp.Method.Put);
+                var response = await _sdk.ExecuteResource("/services/beplicconfigurationintegra/v1/integra/user", userAdminData, RestSharp.Method.Put);
 
                 if (response.IsSuccessStatusCode)
                 {
