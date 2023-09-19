@@ -10,18 +10,18 @@ namespace DopplerBeplic.Models.DTO
 
     public class UserCreationCustomer
     {
+        [JsonProperty("partner")]
+        public string? Partner { get; set; }
         [JsonProperty("cuit")]
-        public string Cuit { get; set; } = string.Empty;
+        public string? Cuit { get; set; }
         [JsonProperty("address")]
-        public string Address { get; set; } = string.Empty;
+        public string? Address { get; set; }
         [JsonProperty("razonSocial")]
-        public string BusinessName { get; set; } = string.Empty;
+        public string? BusinessName { get; set; }
         [JsonProperty("legalName")]
-        public string LegalName { get; set; } = string.Empty;
+        public string? LegalName { get; set; }
         [JsonProperty("idExternal")]
         public string IdExternal { get; set; } = string.Empty;
-        [JsonProperty("partner")]
-        public string Partner { get; set; } = string.Empty;
         [JsonProperty("apiKey")]
         public string ApiKey { get; set; } = string.Empty;
         [JsonProperty("plan")]
