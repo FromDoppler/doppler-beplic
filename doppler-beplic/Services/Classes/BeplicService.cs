@@ -20,7 +20,9 @@ namespace DopplerBeplic.Services.Classes
         public async Task<UserCreationResponse> CreateUser(UserCreationDTO accountData)
         {
             accountData.Customer.Partner ??= _options.Customer.Partner;
+            accountData.Customer.BusinessName ??= _options.Customer.BusinessName;
             accountData.Customer.Address ??= _options.Customer.Address;
+            accountData.Customer.Cuit ??= _options.Customer.Cuit;
 
             var result = new UserCreationResponse();
 

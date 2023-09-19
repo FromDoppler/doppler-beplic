@@ -13,8 +13,9 @@ namespace DopplerBeplic.Models.Config
         public const string Customer = "Customer";
 
         public string Partner { get; set; } = "DOPPLER";
-
+        public string BusinessName { get; set; } = "Sin definir";
         public string Address { get; set; } = "Sin definir";
+        public string Cuit { get; set; } = "Sin definir";
     }
 
     public class DefaultPlan
