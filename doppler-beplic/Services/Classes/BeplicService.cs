@@ -21,6 +21,7 @@ namespace DopplerBeplic.Services.Classes
         {
             accountData.Customer.Partner ??= _options.Customer.Partner;
             accountData.Customer.BusinessName ??= _options.Customer.BusinessName;
+            accountData.Customer.LegalName ??= _options.Customer.LegalName;
             accountData.Customer.Address ??= _options.Customer.Address;
             accountData.Customer.Cuit ??= _options.Customer.Cuit;
 
