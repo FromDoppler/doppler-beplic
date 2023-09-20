@@ -106,18 +106,14 @@ app.MapPost("/account", async Task<Results<Created<UserCreationResponse>, BadReq
 .WithOpenApi()
 .RequireAuthorization(Policies.OnlySuperuser);
 
-app.MapPut("/user", async Task<Results<Ok<string>, BadRequest<string>>> (
+app.MapPut("/user", async Task<Results<Ok<UserAdminUpdateResponse>, BadRequest<string>>> (
     IBeplicService beplicService,
     [FromBody] UserAdminUpdateDTO body) =>
 {
     var response = await beplicService.UpdateUserAdmin(body);
 
     return response.Success ?
-        TypedResults.Ok(string.Format(
-            CultureInfo.InvariantCulture,
-            "User updated with CustomerId: {0} and UserId:{1}",
-            response.CustomerId,
-            response.UserId))
+        TypedResults.Ok(response)
         : TypedResults.BadRequest(
             string.Format(
                 CultureInfo.InvariantCulture,
@@ -129,14 +125,14 @@ app.MapPut("/user", async Task<Results<Ok<string>, BadRequest<string>>> (
 .WithOpenApi()
 .RequireAuthorization(Policies.OnlySuperuser);
 
-app.MapPut("/customer", async Task<Results<Ok<string>, BadRequest<string>>> (
+app.MapPut("/customer", async Task<Results<Ok<CustomerUpdateResponse>, BadRequest<string>>> (
     IBeplicService beplicService,
     [FromBody] CustomerUpdateDTO body) =>
 {
     var response = await beplicService.UpdateCustomer(body);
 
     return response.Success ?
-        TypedResults.Ok(string.Format(CultureInfo.InvariantCulture, "Customer updated for CustomerId: {0}", response.CustomerId))
+        TypedResults.Ok(response)
         : TypedResults.BadRequest(
             string.Format(
                 CultureInfo.InvariantCulture,
