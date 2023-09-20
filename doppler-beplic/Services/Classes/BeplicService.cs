@@ -33,21 +33,19 @@ namespace DopplerBeplic.Services.Classes
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var deserealizedResponse = JsonConvert.DeserializeAnonymousType(response.Content ?? "", new
+                    var deserealizedResponse = JsonConvert.DeserializeAnonymousType(response.Content ?? string.Empty, new
                     {
                         success = false,
                         message = string.Empty,
                         data = new
                         {
                             idCustomer = 0,
-                            accessToken = string.Empty
                         }
                     });
 
                     result.Success = deserealizedResponse?.success ?? false;
                     result.Error = result.Success ? null : deserealizedResponse?.message;
                     result.CustomerId = deserealizedResponse?.data.idCustomer;
-                    result.UserToken = deserealizedResponse?.data.accessToken;
                 }
                 else
                 {
@@ -117,7 +115,7 @@ namespace DopplerBeplic.Services.Classes
                 }
                 else
                 {
-                    var deserealizedResponse = JsonConvert.DeserializeAnonymousType(response.Content ?? "",
+                    var deserealizedResponse = JsonConvert.DeserializeAnonymousType(response.Content ?? string.Empty,
                         new
                         {
                             errors = new[]
@@ -191,7 +189,7 @@ namespace DopplerBeplic.Services.Classes
                 }
                 else
                 {
-                    var deserealizedResponse = JsonConvert.DeserializeAnonymousType(response.Content ?? "",
+                    var deserealizedResponse = JsonConvert.DeserializeAnonymousType(response.Content ?? string.Empty,
                         new
                         {
                             errors = new[]
