@@ -1,6 +1,6 @@
 namespace DopplerBeplic.Models.Responses
 {
-    public class CompanyUpdateResponse
+    public class CustomerUpdateResponse
     {
         public bool Success { get; set; }
         public string? Message { get; set; }

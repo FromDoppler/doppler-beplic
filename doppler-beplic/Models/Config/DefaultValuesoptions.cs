@@ -6,6 +6,16 @@ namespace DopplerBeplic.Models.Config
 
         public DefaultCustomer Customer { get; set; } = new DefaultCustomer();
         public DefaultPlan Plan { get; set; } = new DefaultPlan();
+        public DefaultCustomerStatus CustomerStatus { get; set; } = new DefaultCustomerStatus();
+    }
+
+    public class DefaultCustomerStatus
+    {
+        public const string Customer = "CustomerStatus";
+
+        public string Active { get; set; } = string.Empty;
+        public string Inactive { get; set; } = string.Empty;
+        public string Low { get; set; } = string.Empty;
     }
 
     public class DefaultCustomer
