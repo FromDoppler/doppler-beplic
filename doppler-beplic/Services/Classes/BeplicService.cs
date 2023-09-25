@@ -40,12 +40,14 @@ namespace DopplerBeplic.Services.Classes
                         data = new
                         {
                             idCustomer = 0,
+                            accessToken = string.Empty
                         }
                     });
 
                     result.Success = deserealizedResponse?.success ?? false;
                     result.Error = result.Success ? null : deserealizedResponse?.message;
                     result.CustomerId = deserealizedResponse?.data.idCustomer;
+                    result.UserToken = deserealizedResponse?.data.accessToken;
                 }
                 else
                 {
