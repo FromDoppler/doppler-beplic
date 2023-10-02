@@ -1,5 +1,5 @@
-using Serilog;
 using System.Globalization;
+using Serilog;
 
 namespace DopplerBeplic.Logging
 {
