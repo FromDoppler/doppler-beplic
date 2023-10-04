@@ -7,16 +7,25 @@ using Newtonsoft.Json;
 
 namespace DopplerBeplic.Services.Classes
 {
-    public class BeplicService : IBeplicService
+    public partial class BeplicService : IBeplicService
     {
         private readonly BeplicSdk _sdk;
         private readonly DefaulValuesOptions _options;
+        private readonly ILogger<BeplicService> _logger;
 
-        public BeplicService(IOptions<DefaulValuesOptions> options, BeplicSdk sdk)
+        public BeplicService(IOptions<DefaulValuesOptions> options, BeplicSdk sdk, ILogger<BeplicService> logger)
         {
             _options = options.Value;
             _sdk = sdk;
+            _logger = logger;
         }
+
+        [LoggerMessage(0, LogLevel.Debug, "Unsuccesfull response from Beplic API for UserId:{UserId}. Response: {Response} Status: {Status}")]
+        partial void LogDebugBadRequest(string userId, string response, string status);
+
+        [LoggerMessage(1, LogLevel.Error, "Unexpected exception thrown for UserId:{UserId}.")]
+        partial void LogErrorException(string userId, Exception e);
+
         public async Task<UserCreationResponse> CreateUser(UserCreationDTO accountData)
         {
             accountData.Customer.Partner ??= _options.Customer.Partner;
@@ -57,6 +66,7 @@ namespace DopplerBeplic.Services.Classes
                 }
                 else
                 {
+                    LogDebugBadRequest(accountData.Customer.IdExternal, response.Content ?? "", response.StatusCode.ToString());
                     var deserealizedResponse = JsonConvert.DeserializeAnonymousType(response.Content ?? "",
                         new
                         {
@@ -84,6 +94,7 @@ namespace DopplerBeplic.Services.Classes
             }
             catch (Exception ex)
             {
+                LogErrorException(accountData.Customer.IdExternal, ex);
                 result.Success = false;
                 result.Error = ex.Message;
             }
@@ -123,6 +134,7 @@ namespace DopplerBeplic.Services.Classes
                 }
                 else
                 {
+                    LogDebugBadRequest(customerData.Customer.IdExternal, response.Content ?? "", response.StatusCode.ToString());
                     var deserealizedResponse = JsonConvert.DeserializeAnonymousType(response.Content ?? string.Empty,
                         new
                         {
@@ -150,6 +162,7 @@ namespace DopplerBeplic.Services.Classes
             }
             catch (Exception ex)
             {
+                LogErrorException(customerData.Customer.IdExternal, ex);
                 result.Success = false;
                 result.Error = ex.Message;
             }
@@ -197,6 +210,7 @@ namespace DopplerBeplic.Services.Classes
                 }
                 else
                 {
+                    LogDebugBadRequest(userAdminData.IdExternal, response.Content ?? "", response.StatusCode.ToString());
                     var deserealizedResponse = JsonConvert.DeserializeAnonymousType(response.Content ?? string.Empty,
                         new
                         {
@@ -224,6 +238,7 @@ namespace DopplerBeplic.Services.Classes
             }
             catch (Exception ex)
             {
+                LogErrorException(userAdminData.IdExternal, ex);
                 result.Success = false;
                 result.Error = ex.Message;
             }

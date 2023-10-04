@@ -6,6 +6,15 @@ namespace DopplerBeplic.DopplerSecurity;
 
 public partial class IsOwnResourceAuthorizationHandler : AuthorizationHandler<DopplerAuthorizationRequirement>
 {
+    private readonly ILogger<IsOwnResourceAuthorizationHandler> _logger;
+
+    [LoggerMessage(0, LogLevel.Debug, "Is not possible access to Resource information. Type of context.Resource: {ResourceType}")]
+    partial void LogErrorResourceInformationNotAccessible(string resourceType);
+
+    public IsOwnResourceAuthorizationHandler(ILogger<IsOwnResourceAuthorizationHandler> logger)
+    {
+        _logger = logger;
+    }
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, DopplerAuthorizationRequirement requirement)
     {
         if (requirement.AllowOwnResource && IsOwnResource(context))
@@ -16,10 +25,11 @@ public partial class IsOwnResourceAuthorizationHandler : AuthorizationHandler<Do
         return Task.CompletedTask;
     }
 
-    private static bool IsOwnResource(AuthorizationHandlerContext context)
+    private bool IsOwnResource(AuthorizationHandlerContext context)
     {
         if (!TryGetRouteData(context, out var routeData))
         {
+            LogErrorResourceInformationNotAccessible(context.Resource?.GetType().Name ?? "null");
             return false;
         }
 

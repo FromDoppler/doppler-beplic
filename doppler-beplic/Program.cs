@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Text.Json.Serialization;
 using DopplerBeplic.DopplerSecurity;
+using DopplerBeplic.Logging;
 using DopplerBeplic.Models.Config;
 using DopplerBeplic.Models.DTO;
 using DopplerBeplic.Models.Responses;
@@ -9,6 +10,7 @@ using DopplerBeplic.Services.Interfaces;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +36,11 @@ builder.Configuration.AddJsonFile("/run/secrets/appsettings.Secret.json",
 builder.Configuration.AddKeyPerFile("/run/secrets",
     optional: true,
     reloadOnChange: true);
+
+builder.Host.UseSerilog((hostContext, loggerConfiguration) =>
+{
+    loggerConfiguration.SetupSeriLog(hostContext.Configuration, hostContext.HostingEnvironment);
+});
 
 builder.Services.Configure<ApiConnectionOptions>(
     builder.Configuration.GetSection(ApiConnectionOptions.Connection));
