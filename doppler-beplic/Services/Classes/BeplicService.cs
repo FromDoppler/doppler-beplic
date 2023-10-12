@@ -67,29 +67,11 @@ namespace DopplerBeplic.Services.Classes
                 else
                 {
                     LogInfoBadRequest(accountData.Customer.IdExternal, response.Content ?? "", response.StatusCode.ToString());
-                    var deserealizedResponse = JsonConvert.DeserializeAnonymousType(response.Content ?? "",
-                        new
-                        {
-                            errors = new[]
-                            {
-                                new {
-                                    status = string.Empty,
-                                    title = string.Empty,
-                                    detail = string.Empty,
-                                    source = new
-                                    {
-                                        pointer = string.Empty
-                                    }
-                                }
-                            }.ToList()
-                        });
-
-                    //TODO: Verify with beplic if the array of errors it's realy needed.
-                    var error = deserealizedResponse?.errors.FirstOrDefault();
+                    var deserealizedResponse = JsonConvert.DeserializeAnonymousType(response.Content ?? "", new ErrorResponse());
 
                     result.Success = false;
-                    result.ErrorStatus = error?.status;
-                    result.Error = error?.detail;
+                    result.ErrorStatus = deserealizedResponse?.Status;
+                    result.Error = deserealizedResponse?.Message;
                 }
             }
             catch (Exception ex)
@@ -135,29 +117,11 @@ namespace DopplerBeplic.Services.Classes
                 else
                 {
                     LogInfoBadRequest(customerData.Customer.IdExternal, response.Content ?? "", response.StatusCode.ToString());
-                    var deserealizedResponse = JsonConvert.DeserializeAnonymousType(response.Content ?? string.Empty,
-                        new
-                        {
-                            errors = new[]
-                            {
-                                new {
-                                    status = string.Empty,
-                                    title = string.Empty,
-                                    detail = string.Empty,
-                                    source = new
-                                    {
-                                        pointer = string.Empty
-                                    }
-                                }
-                            }.ToList()
-                        });
-
-                    //TODO: Verify with beplic if the array of errors it's realy needed.
-                    var error = deserealizedResponse?.errors.FirstOrDefault();
+                    var deserealizedResponse = JsonConvert.DeserializeAnonymousType(response.Content ?? string.Empty, new ErrorResponse());
 
                     result.Success = false;
-                    result.ErrorStatus = error?.status;
-                    result.Error = error?.detail;
+                    result.ErrorStatus = deserealizedResponse?.Status;
+                    result.Error = deserealizedResponse?.Message;
                 }
             }
             catch (Exception ex)
@@ -211,29 +175,11 @@ namespace DopplerBeplic.Services.Classes
                 else
                 {
                     LogInfoBadRequest(userAdminData.IdExternal, response.Content ?? "", response.StatusCode.ToString());
-                    var deserealizedResponse = JsonConvert.DeserializeAnonymousType(response.Content ?? string.Empty,
-                        new
-                        {
-                            errors = new[]
-                            {
-                                new {
-                                    status = string.Empty,
-                                    title = string.Empty,
-                                    detail = string.Empty,
-                                    source = new
-                                    {
-                                        pointer = string.Empty
-                                    }
-                                }
-                            }.ToList()
-                        });
-
-                    //TODO: Verify with beplic if the array of errors it's realy needed.
-                    var error = deserealizedResponse?.errors.FirstOrDefault();
+                    var deserealizedResponse = JsonConvert.DeserializeAnonymousType(response.Content ?? string.Empty, new ErrorResponse());
 
                     result.Success = false;
-                    result.ErrorStatus = error?.status;
-                    result.Error = error?.detail;
+                    result.ErrorStatus = deserealizedResponse?.Status;
+                    result.Error = deserealizedResponse?.Message;
                 }
             }
             catch (Exception ex)
