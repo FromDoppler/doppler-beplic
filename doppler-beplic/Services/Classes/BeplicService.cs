@@ -20,8 +20,8 @@ namespace DopplerBeplic.Services.Classes
             _logger = logger;
         }
 
-        [LoggerMessage(0, LogLevel.Debug, "Unsuccesfull response from Beplic API for UserId:{UserId}. Response: {Response} Status: {Status}")]
-        partial void LogDebugBadRequest(string userId, string response, string status);
+        [LoggerMessage(0, LogLevel.Information, "Unsuccesfull response from Beplic API for UserId:{UserId}. Response: {Response} Status: {Status}")]
+        partial void LogInfoBadRequest(string userId, string response, string status);
 
         [LoggerMessage(1, LogLevel.Error, "Unexpected exception thrown for UserId:{UserId}.")]
         partial void LogErrorException(string userId, Exception e);
@@ -66,7 +66,7 @@ namespace DopplerBeplic.Services.Classes
                 }
                 else
                 {
-                    LogDebugBadRequest(accountData.Customer.IdExternal, response.Content ?? "", response.StatusCode.ToString());
+                    LogInfoBadRequest(accountData.Customer.IdExternal, response.Content ?? "", response.StatusCode.ToString());
                     var deserealizedResponse = JsonConvert.DeserializeAnonymousType(response.Content ?? "",
                         new
                         {
@@ -134,7 +134,7 @@ namespace DopplerBeplic.Services.Classes
                 }
                 else
                 {
-                    LogDebugBadRequest(customerData.Customer.IdExternal, response.Content ?? "", response.StatusCode.ToString());
+                    LogInfoBadRequest(customerData.Customer.IdExternal, response.Content ?? "", response.StatusCode.ToString());
                     var deserealizedResponse = JsonConvert.DeserializeAnonymousType(response.Content ?? string.Empty,
                         new
                         {
@@ -210,7 +210,7 @@ namespace DopplerBeplic.Services.Classes
                 }
                 else
                 {
-                    LogDebugBadRequest(userAdminData.IdExternal, response.Content ?? "", response.StatusCode.ToString());
+                    LogInfoBadRequest(userAdminData.IdExternal, response.Content ?? "", response.StatusCode.ToString());
                     var deserealizedResponse = JsonConvert.DeserializeAnonymousType(response.Content ?? string.Empty,
                         new
                         {
