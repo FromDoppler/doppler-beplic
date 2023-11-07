@@ -19,4 +19,4 @@ jobs:
     secrets: inherit
     with:
       dockerfile-path: "doppler-beplic/Dockerfile"
-      dockerhub-image-name: "doppler-beplic"
+      docker-image-name: "doppler-beplic"
