@@ -4,6 +4,7 @@ using DopplerBeplic.Models.Responses;
 using DopplerBeplic.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using RestSharp;
 
 namespace DopplerBeplic.Services.Classes
 {
@@ -127,6 +128,57 @@ namespace DopplerBeplic.Services.Classes
             catch (Exception ex)
             {
                 LogErrorException(customerData.Customer.IdExternal, ex);
+                result.Success = false;
+                result.Error = ex.Message;
+            }
+
+            return result;
+        }
+
+        public async Task<PlanBalanceResponse> GetPlanBalance(string idExternal)
+        {
+            var result = new PlanBalanceResponse();
+
+            try
+            {
+                var parameters = new Parameter[]
+                {
+                    Parameter.CreateParameter("idExternal",idExternal,ParameterType.QueryString)
+                };
+
+                var response = await _sdk.ExecuteResource("/services/beplicpartners/v1/integra/plan/balance", parameters, Method.Get);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var deserealizedResponse = JsonConvert.DeserializeAnonymousType(response.Content ?? "", new
+                    {
+                        success = false,
+                        message = string.Empty,
+                        data = new
+                        {
+                            conversationsQtyBalance = 0,
+                            whatsAppCreditBalance = (decimal?)0.0
+                        }
+                    });
+
+                    result.Success = deserealizedResponse?.success ?? false;
+                    result.Error = result.Success ? string.Empty : deserealizedResponse?.message;
+                    result.ConversationsQtyBalance = deserealizedResponse?.data.conversationsQtyBalance;
+                    result.WhatsAppCreditBalance = deserealizedResponse?.data.whatsAppCreditBalance;
+                }
+                else
+                {
+                    LogInfoBadRequest(idExternal.ToString(), response.Content ?? "", response.StatusCode.ToString());
+                    var deserealizedResponse = JsonConvert.DeserializeAnonymousType(response.Content ?? string.Empty, new ErrorResponse());
+
+                    result.Success = false;
+                    result.ErrorStatus = deserealizedResponse?.Status;
+                    result.Error = deserealizedResponse?.Message;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogErrorException(idExternal, ex);
                 result.Success = false;
                 result.Error = ex.Message;
             }

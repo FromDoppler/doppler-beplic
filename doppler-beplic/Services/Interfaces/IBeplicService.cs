@@ -10,5 +10,7 @@ namespace DopplerBeplic.Services.Interfaces
         Task<CustomerUpdateResponse> UpdateCustomer(CustomerUpdateDTO customerData);
 
         Task<UserAdminUpdateResponse> UpdateUserAdmin(UserAdminUpdateDTO userAdminData);
+
+        Task<PlanBalanceResponse> GetPlanBalance(string idExternal);
     }
 }
