@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Net;
 using System.Security.Authentication;
 using DopplerBeplic.Models.Config;
@@ -75,7 +76,7 @@ namespace DopplerBeplic.Services.Classes
                         access_token = string.Empty,
                         expires_in = 0
                     })
-                : throw new AuthenticationException(message: "Failed to authenticate to beplic API.");
+                : throw new AuthenticationException(message: string.Format(CultureInfo.InvariantCulture, "Failed to authenticate to beplic API. Error: {0}. RequestedURL: {1}", response.Content, response.ResponseUri?.AbsoluteUri ?? ""));
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
