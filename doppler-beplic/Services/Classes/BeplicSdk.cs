@@ -59,6 +59,8 @@ namespace DopplerBeplic.Services.Classes
         {
             var request = new RestRequest("auth/login", Method.Post);
             request.AddHeader("Content-Type", "application/json");
+            request.AddHeader("partner-key", _options.PartnerKey);
+
             request.AddJsonBody(new
             {
                 username = _options.User,
