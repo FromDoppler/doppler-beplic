@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using DopplerBeplic.Models.Config;
 using DopplerBeplic.Models.DTO;
 using DopplerBeplic.Models.Responses;
@@ -5,7 +6,6 @@ using DopplerBeplic.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RestSharp;
-using System.Collections.Generic;
 
 namespace DopplerBeplic.Services.Classes
 {
@@ -136,14 +136,15 @@ namespace DopplerBeplic.Services.Classes
             return result;
         }
 
-        public async Task<PlanBalanceResponse> GetPlanBalance(string idExternal, DateTime? fromDate = null , DateTime? toDate = null)
+        public async Task<PlanBalanceResponse> GetPlanBalance(string idExternal, DateTime? fromDate = null, DateTime? toDate = null)
         {
             var result = new PlanBalanceResponse();
 
             try
             {
                 var response = await _sdk.ExecuteResource("/services/bepliccoredashboard/api/conversation/count",
-                    new{
+                    new
+                    {
                         idExternal,
                         fechaInicio = fromDate,
                         fechaFin = toDate
@@ -175,7 +176,7 @@ namespace DopplerBeplic.Services.Classes
                             (int)x.conversationsQtyFree < (int)x.conversationsQtyInitiatedByContact
                                 ? (int)x.conversationsQtyInitiatedByContact - (int)x.conversationsQtyFree
                                 : 0
-                          )
+                        )
                     ).Sum();
                     result.WhatsAppCreditBalance = deserealizedResponse?.data.Select(x => (decimal)x.whatsAppConsumedBalance).Sum();
                 }
