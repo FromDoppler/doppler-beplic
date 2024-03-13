@@ -5,6 +5,7 @@ using DopplerBeplic.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RestSharp;
+using System.Collections.Generic;
 
 namespace DopplerBeplic.Services.Classes
 {
@@ -135,18 +136,18 @@ namespace DopplerBeplic.Services.Classes
             return result;
         }
 
-        public async Task<PlanBalanceResponse> GetPlanBalance(string idExternal)
+        public async Task<PlanBalanceResponse> GetPlanBalance(string idExternal, DateTime? fromDate = null , DateTime? toDate = null)
         {
             var result = new PlanBalanceResponse();
 
             try
             {
-                var parameters = new Parameter[]
-                {
-                    Parameter.CreateParameter("idExternal",idExternal,ParameterType.QueryString)
-                };
-
-                var response = await _sdk.ExecuteResource("/services/beplicpartners/v1/integra/plan/balance", parameters, Method.Get);
+                var response = await _sdk.ExecuteResource("/services/bepliccoredashboard/api/conversation/count",
+                    new{
+                        idExternal,
+                        fechaInicio = fromDate,
+                        fechaFin = toDate
+                    }, Method.Get);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -154,17 +155,29 @@ namespace DopplerBeplic.Services.Classes
                     {
                         success = false,
                         message = string.Empty,
-                        data = new
-                        {
-                            conversationsQtyBalance = 0,
-                            whatsAppCreditBalance = (decimal?)0.0
+                        data = new List<dynamic> {
+                            new {
+                                phoneNumber = string.Empty,
+                                conversationsQtyFree = string.Empty,
+                                conversationsQtyInitiatedByCustomer = string.Empty,
+                                conversationsQtyInitiatedByContact =  string.Empty,
+                                conversationsQtyInitiatedByUnknown = string.Empty, //We are awaiting definition on this field
+                                whatsAppConsumedBalance = string.Empty,
+                            }
                         }
                     });
 
                     result.Success = deserealizedResponse?.success ?? false;
                     result.Error = result.Success ? string.Empty : deserealizedResponse?.message;
-                    result.ConversationsQtyBalance = deserealizedResponse?.data.conversationsQtyBalance;
-                    result.WhatsAppCreditBalance = deserealizedResponse?.data.whatsAppCreditBalance;
+                    result.ConversationsQtyBalance = deserealizedResponse?.data.Select(
+                        x => (int)x.conversationsQtyInitiatedByCustomer
+                        + (
+                            (int)x.conversationsQtyFree < (int)x.conversationsQtyInitiatedByContact
+                                ? (int)x.conversationsQtyInitiatedByContact - (int)x.conversationsQtyFree
+                                : 0
+                          )
+                    ).Sum();
+                    result.WhatsAppCreditBalance = deserealizedResponse?.data.Select(x => (decimal)x.whatsAppConsumedBalance).Sum();
                 }
                 else
                 {
