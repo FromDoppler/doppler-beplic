@@ -11,6 +11,6 @@ namespace DopplerBeplic.Services.Interfaces
 
         Task<UserAdminUpdateResponse> UpdateUserAdmin(UserAdminUpdateDTO userAdminData);
 
-        Task<PlanBalanceResponse> GetPlanBalance(string idExternal);
+        Task<PlanBalanceResponse> GetPlanBalance(string idExternal, DateTime? fromDate = null, DateTime? toDate = null);
     }
 }
