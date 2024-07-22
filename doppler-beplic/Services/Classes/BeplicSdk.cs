@@ -51,7 +51,7 @@ namespace DopplerBeplic.Services.Classes
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls13;
 
             return new RestClient(
-                _options.BaseUrl,
+                _options.BaseApiUrl,
                 configureSerialization: s => s.UseNewtonsoftJson());
         }
 
