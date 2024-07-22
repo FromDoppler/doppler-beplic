@@ -45,7 +45,7 @@ namespace DopplerBeplic.Services.Classes
 
             try
             {
-                var response = await _sdk.ExecuteResource("/services/beplicpartners/v1/integra/customers", accountData, RestSharp.Method.Post);
+                var response = await _sdk.ExecuteApiResource("/services/beplicpartners/v1/integra/customers", accountData, RestSharp.Method.Post);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -97,7 +97,7 @@ namespace DopplerBeplic.Services.Classes
 
             try
             {
-                var response = await _sdk.ExecuteResource("/services/beplicpartners/v1/integra/customers", customerData, RestSharp.Method.Put);
+                var response = await _sdk.ExecuteApiResource("/services/beplicpartners/v1/integra/customers", customerData, RestSharp.Method.Put);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -146,7 +146,7 @@ namespace DopplerBeplic.Services.Classes
                     Parameter.CreateParameter("idExternal",idExternal,ParameterType.QueryString)
                 };
 
-                var response = await _sdk.ExecuteResource("/services/beplicpartners/v1/integra/plan/balance", parameters, Method.Get);
+                var response = await _sdk.ExecuteApiResource("/services/beplicpartners/v1/integra/plan/balance", parameters, Method.Get);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -204,7 +204,7 @@ namespace DopplerBeplic.Services.Classes
 
             try
             {
-                var response = await _sdk.ExecuteResource("/services/beplicpartners/v1/integra/user", userAdminData, RestSharp.Method.Put);
+                var response = await _sdk.ExecuteApiResource("/services/beplicpartners/v1/integra/user", userAdminData, RestSharp.Method.Put);
 
                 if (response.IsSuccessStatusCode)
                 {

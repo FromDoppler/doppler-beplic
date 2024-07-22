@@ -15,14 +15,14 @@ namespace DopplerBeplic.Services.Classes
         public string? AccessToken { get; private set; }
         public DateTime? ExpirationDate { get; private set; }
 
-        private readonly RestClient _client;
+        private readonly RestClient _apiClient;
         public BeplicSdk(IOptions<ApiConnectionOptions> options)
         {
             _options = options.Value;
-            _client = GetClient();
+            _apiClient = GetApiClient();
         }
 
-        public async Task<RestResponse> ExecuteResource(string resource, object body, Method metod)
+        public async Task<RestResponse> ExecuteApiResource(string resource, object body, Method metod)
         {
             await EnsureAuthentication();
 
@@ -31,10 +31,10 @@ namespace DopplerBeplic.Services.Classes
             request.AddHeader("Content-Type", "application/json");
             request.AddHeader("Authorization", "Bearer " + AccessToken);
 
-            return await _client.ExecuteAsync(request);
+            return await _apiClient.ExecuteAsync(request);
         }
 
-        public async Task<RestResponse> ExecuteResource(string resource, Parameter[] parameters, Method metod)
+        public async Task<RestResponse> ExecuteApiResource(string resource, Parameter[] parameters, Method metod)
         {
             await EnsureAuthentication();
 
@@ -43,10 +43,10 @@ namespace DopplerBeplic.Services.Classes
             request.AddHeader("Authorization", "Bearer " + AccessToken);
             request.Parameters.AddParameters(parameters);
 
-            return await _client.ExecuteAsync(request);
+            return await _apiClient.ExecuteAsync(request);
         }
 
-        private RestClient GetClient()
+        private RestClient GetApiClient()
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls13;
 
@@ -68,7 +68,7 @@ namespace DopplerBeplic.Services.Classes
                 rememberMe = false
             }, ContentType.Json);
 
-            var response = await _client.ExecuteAsync(request);
+            var response = await _apiClient.ExecuteAsync(request);
 
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             dynamic content = response.IsSuccessStatusCode
