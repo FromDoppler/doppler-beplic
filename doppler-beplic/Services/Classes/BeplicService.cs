@@ -1,10 +1,13 @@
 using DopplerBeplic.Models.Config;
 using DopplerBeplic.Models.DTO;
 using DopplerBeplic.Models.Responses;
+using DopplerBeplic.Models.Responses.BeplicResponses;
 using DopplerBeplic.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RestSharp;
+using System.Globalization;
+using System.Net;
 
 namespace DopplerBeplic.Services.Classes
 {
@@ -242,6 +245,39 @@ namespace DopplerBeplic.Services.Classes
             }
 
             return result;
+        }
+
+        public async Task<IEnumerable<PlanResponse>> GetPlans()
+        {
+            try
+            {
+                var response = await _sdk.ExecuteServiceResource("/services/beplicoreuser/api/v1/plans", Method.Get);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = JsonConvert.DeserializeObject<BeplicServiceResponse<List<PlanResponse>>>(response.Content ?? string.Empty);
+
+                    if (result is not null && result.HttpStatusCode == (int)HttpStatusCode.OK)
+                    {
+                        return result.Data ?? [];
+                    }
+
+                    LogInfoBadRequest("Get plans", result?.Message ?? "", result?.HttpStatusCode.ToString(CultureInfo.InvariantCulture) ?? "");
+
+                    throw new BadHttpRequestException(result?.Message ?? "");
+                }
+                else
+                {
+                    LogInfoBadRequest("Get plans", response.Content ?? "", response.StatusCode.ToString());
+
+                    throw new BadHttpRequestException(response.Content ?? "");
+                }
+            }
+            catch (Exception ex)
+            {
+                LogErrorException("Get plans", ex);
+                throw;
+            }
         }
     }
 }
