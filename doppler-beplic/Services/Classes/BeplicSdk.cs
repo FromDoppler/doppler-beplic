@@ -16,10 +16,12 @@ namespace DopplerBeplic.Services.Classes
         public DateTime? ExpirationDate { get; private set; }
 
         private readonly RestClient _apiClient;
+        private readonly RestClient _serviceClient;
         public BeplicSdk(IOptions<ApiConnectionOptions> options)
         {
             _options = options.Value;
             _apiClient = GetApiClient();
+            _serviceClient = GetServiceClient();
         }
 
         public async Task<RestResponse> ExecuteApiResource(string resource, object body, Method metod)
@@ -52,6 +54,15 @@ namespace DopplerBeplic.Services.Classes
 
             return new RestClient(
                 _options.BaseApiUrl,
+                configureSerialization: s => s.UseNewtonsoftJson());
+        }
+
+        private RestClient GetServiceClient()
+        {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls13;
+
+            return new RestClient(
+                _options.BaseServiceUrl,
                 configureSerialization: s => s.UseNewtonsoftJson());
         }
 
