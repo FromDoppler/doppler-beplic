@@ -59,6 +59,18 @@ namespace DopplerBeplic.Services.Classes
             return await _serviceClient.ExecuteAsync(request);
         }
 
+        public async Task<RestResponse> ExecuteServiceResource(string resource, object body, Method metod)
+        {
+            await EnsureAuthentication();
+
+            var request = new RestRequest(resource, metod);
+            request.AddJsonBody(body);
+            request.AddHeader("Content-Type", "application/json");
+            request.AddHeader("Authorization", "Bearer " + AccessToken);
+
+            return await _serviceClient.ExecuteAsync(request);
+        }
+
         private RestClient GetApiClient()
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls13;

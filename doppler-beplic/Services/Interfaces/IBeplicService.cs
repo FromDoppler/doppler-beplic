@@ -14,5 +14,7 @@ namespace DopplerBeplic.Services.Interfaces
         Task<PlanBalanceResponse> GetPlanBalance(string idExternal);
 
         Task<IEnumerable<PlanResponse>> GetPlans();
+
+        Task<PlanAssignResponse> PlanAssign(PlanAssignmentDTO planAssignData);
     }
 }

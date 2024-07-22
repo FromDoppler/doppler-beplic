@@ -187,6 +187,21 @@ app.MapGet("/plan", async Task<Results<Ok<IEnumerable<PlanResponse>>, BadRequest
 .WithOpenApi()
 .RequireAuthorization(Policies.OnlySuperuser);
 
+app.MapPost("/plan/customer", async Task<Results<Ok<PlanAssignResponse>, BadRequest<PlanAssignResponse>>> (
+    IBeplicService beplicService,
+    [FromBody] PlanAssignmentDTO planAssignData) =>
+{
+    var response = await beplicService.PlanAssign(planAssignData);
+
+    return response.Success ?
+        TypedResults.Ok(response) :
+        TypedResults.BadRequest(response);
+
+})
+.WithName("PlanAssign")
+.WithOpenApi()
+.RequireAuthorization(Policies.OnlySuperuser);
+
 app.Run();
 
 // Make the implicit Program class public so test projects can access it

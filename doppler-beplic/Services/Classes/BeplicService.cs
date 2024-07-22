@@ -279,5 +279,51 @@ namespace DopplerBeplic.Services.Classes
                 throw;
             }
         }
+
+        public async Task<PlanAssignResponse> PlanAssign(PlanAssignmentDTO planAssignData)
+        {
+            var result = new PlanAssignResponse();
+
+            try
+            {
+                var planAssignBeplicDto = new
+                {
+                    partner = _options.Customer.Partner,
+                    idExternal = planAssignData.IdExternal,
+                    idPlan = planAssignData.IdPlan,
+                };
+
+                var response = await _sdk.ExecuteServiceResource("/services/beplicoreuser/api/v1/plans/assign-plan", planAssignBeplicDto, Method.Post);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var deserealizedResponse = JsonConvert.DeserializeObject<BeplicServiceResponse<BeplicPlanAssignSuccessResponse>>(response.Content ?? string.Empty);
+
+                    result.Success = true;
+                    result.StartDate = deserealizedResponse?.Data?.StartDate;
+                    result.EndDate = deserealizedResponse?.Data?.EndDate;
+                    result.ActiveDate = deserealizedResponse?.Data?.ActiveDate;
+                    result.Active = deserealizedResponse?.Data?.Active;
+                    result.TrialPeriod = deserealizedResponse?.Data?.TrialPeriod;
+                }
+                else
+                {
+                    var deserealizedResponse = JsonConvert.DeserializeObject<BeplicServiceResponse<dynamic>>(response.Content ?? string.Empty);
+
+                    result.Success = false;
+                    result.Error = deserealizedResponse?.Message ?? "Unknown error";
+                    result.ErrorStatus = deserealizedResponse?.HttpStatusCode.ToString(CultureInfo.InvariantCulture) ?? "";
+
+                    LogInfoBadRequest(planAssignData.IdExternal, response.Content ?? "", result.ErrorStatus);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogErrorException("Plan assign", ex);
+                throw;
+            }
+
+            return result;
+        }
     }
 }
