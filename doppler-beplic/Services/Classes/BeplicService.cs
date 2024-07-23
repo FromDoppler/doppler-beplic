@@ -1,3 +1,5 @@
+using System.Globalization;
+using System.Net;
 using DopplerBeplic.Models.Config;
 using DopplerBeplic.Models.DTO;
 using DopplerBeplic.Models.Responses;
@@ -6,8 +8,6 @@ using DopplerBeplic.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RestSharp;
-using System.Globalization;
-using System.Net;
 
 namespace DopplerBeplic.Services.Classes
 {
