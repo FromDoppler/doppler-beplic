@@ -1,6 +1,9 @@
+using System.Globalization;
+using System.Net;
 using DopplerBeplic.Models.Config;
 using DopplerBeplic.Models.DTO;
 using DopplerBeplic.Models.Responses;
+using DopplerBeplic.Models.Responses.BeplicResponses;
 using DopplerBeplic.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -45,7 +48,7 @@ namespace DopplerBeplic.Services.Classes
 
             try
             {
-                var response = await _sdk.ExecuteResource("/services/beplicpartners/v1/integra/customers", accountData, RestSharp.Method.Post);
+                var response = await _sdk.ExecuteApiResource("/services/beplicpartners/v1/integra/customers", accountData, RestSharp.Method.Post);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -97,7 +100,7 @@ namespace DopplerBeplic.Services.Classes
 
             try
             {
-                var response = await _sdk.ExecuteResource("/services/beplicpartners/v1/integra/customers", customerData, RestSharp.Method.Put);
+                var response = await _sdk.ExecuteApiResource("/services/beplicpartners/v1/integra/customers", customerData, RestSharp.Method.Put);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -146,7 +149,7 @@ namespace DopplerBeplic.Services.Classes
                     Parameter.CreateParameter("idExternal",idExternal,ParameterType.QueryString)
                 };
 
-                var response = await _sdk.ExecuteResource("/services/beplicpartners/v1/integra/plan/balance", parameters, Method.Get);
+                var response = await _sdk.ExecuteApiResource("/services/beplicpartners/v1/integra/plan/balance", parameters, Method.Get);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -204,7 +207,7 @@ namespace DopplerBeplic.Services.Classes
 
             try
             {
-                var response = await _sdk.ExecuteResource("/services/beplicpartners/v1/integra/user", userAdminData, RestSharp.Method.Put);
+                var response = await _sdk.ExecuteApiResource("/services/beplicpartners/v1/integra/user", userAdminData, RestSharp.Method.Put);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -239,6 +242,85 @@ namespace DopplerBeplic.Services.Classes
                 LogErrorException(userAdminData.IdExternal, ex);
                 result.Success = false;
                 result.Error = ex.Message;
+            }
+
+            return result;
+        }
+
+        public async Task<IEnumerable<PlanResponse>> GetPlans()
+        {
+            try
+            {
+                var response = await _sdk.ExecuteServiceResource("/services/beplicoreuser/api/v1/plans", Method.Get);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = JsonConvert.DeserializeObject<BeplicServiceResponse<List<PlanResponse>>>(response.Content ?? string.Empty);
+
+                    if (result is not null && result.HttpStatusCode == (int)HttpStatusCode.OK)
+                    {
+                        return result.Data ?? [];
+                    }
+
+                    LogInfoBadRequest("Get plans", result?.Message ?? "", result?.HttpStatusCode.ToString(CultureInfo.InvariantCulture) ?? "");
+
+                    throw new BadHttpRequestException(result?.Message ?? "");
+                }
+                else
+                {
+                    LogInfoBadRequest("Get plans", response.Content ?? "", response.StatusCode.ToString());
+
+                    throw new BadHttpRequestException(response.Content ?? "");
+                }
+            }
+            catch (Exception ex)
+            {
+                LogErrorException("Get plans", ex);
+                throw;
+            }
+        }
+
+        public async Task<PlanAssignResponse> PlanAssign(PlanAssignmentDTO planAssignData)
+        {
+            var result = new PlanAssignResponse();
+
+            try
+            {
+                var planAssignBeplicDto = new
+                {
+                    partner = _options.Customer.Partner,
+                    idExternal = planAssignData.IdExternal,
+                    idPlan = planAssignData.IdPlan,
+                };
+
+                var response = await _sdk.ExecuteServiceResource("/services/beplicoreuser/api/v1/plans/assign-plan", planAssignBeplicDto, Method.Post);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var deserealizedResponse = JsonConvert.DeserializeObject<BeplicServiceResponse<BeplicPlanAssignSuccessResponse>>(response.Content ?? string.Empty);
+
+                    result.Success = true;
+                    result.StartDate = deserealizedResponse?.Data?.StartDate;
+                    result.EndDate = deserealizedResponse?.Data?.EndDate;
+                    result.ActiveDate = deserealizedResponse?.Data?.ActiveDate;
+                    result.Active = deserealizedResponse?.Data?.Active;
+                    result.TrialPeriod = deserealizedResponse?.Data?.TrialPeriod;
+                }
+                else
+                {
+                    var deserealizedResponse = JsonConvert.DeserializeObject<BeplicServiceResponse<dynamic>>(response.Content ?? string.Empty);
+
+                    result.Success = false;
+                    result.Error = deserealizedResponse?.Message ?? "Unknown error";
+                    result.ErrorStatus = deserealizedResponse?.HttpStatusCode.ToString(CultureInfo.InvariantCulture) ?? "";
+
+                    LogInfoBadRequest(planAssignData.IdExternal, response.Content ?? "", result.ErrorStatus);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogErrorException("Plan assign", ex);
+                throw;
             }
 
             return result;
