@@ -187,6 +187,20 @@ app.MapGet("/plan", async Task<Results<Ok<IEnumerable<PlanResponse>>, BadRequest
 .WithOpenApi()
 .RequireAuthorization(Policies.OnlySuperuser);
 
+app.MapPost("/plan", async Task<Results<Created<PlanCreationResponse>, BadRequest<PlanCreationResponse>>> (
+    IBeplicService beplicService,
+    [FromBody] PlanCreationDTO planData) =>
+{
+    var response = await beplicService.CreatePlan(planData);
+
+    return response.Success ?
+        TypedResults.Created("/plan", response) :
+        TypedResults.BadRequest(response);
+})
+.WithName("CreatePlan")
+.WithOpenApi()
+.RequireAuthorization(Policies.OnlySuperuser);
+
 app.MapPost("/plan/customer", async Task<Results<Ok<PlanAssignResponse>, BadRequest<PlanAssignResponse>>> (
     IBeplicService beplicService,
     [FromBody] PlanAssignmentDTO planAssignData) =>
