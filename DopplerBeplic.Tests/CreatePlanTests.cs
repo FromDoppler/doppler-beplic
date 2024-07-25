@@ -86,16 +86,16 @@ namespace DopplerBeplic.Tests
                 "endDate": "2024-08-24",
                 "trialPeriod": 10,
                 "planConfigurations": [
-                  {
-                      "name": "wsp_conversation_free",
-                      "value": "500",
-                      "id": 33
-                  },
-                  {
-                      "name": "wsp_enable",
-                      "value": "true",
-                      "id": 34
-                  }
+                    {
+                        "name": "wsp_conversation_free",
+                        "value": "500",
+                        "id": 33
+                    },
+                    {
+                        "name": "wsp_enable",
+                        "value": "true",
+                        "id": 34
+                    }
                 ],
                 "publish": false
             }
@@ -152,16 +152,16 @@ namespace DopplerBeplic.Tests
                 "endDate": "2024-08-24",
                 "trialPeriod": 10,
                 "planConfigurations": [
-                  {
-                      "name": "wsp_conversation_free",
-                      "value": "500",
-                      "id": 33
-                  },
-                  {
-                      "name": "wsp_enable",
-                      "value": "true",
-                      "id": 34
-                  }
+                    {
+                        "name": "wsp_conversation_free",
+                        "value": "500",
+                        "id": 33
+                    },
+                    {
+                        "name": "wsp_enable",
+                        "value": "true",
+                        "id": 34
+                    }
                 ],
                 "publish": false
             }
