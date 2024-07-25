@@ -76,30 +76,30 @@ namespace DopplerBeplic.Tests
         public async Task POST_plan_should_authorize_super_user_and_return_created_statuscode()
         {
             var postData = """
-                           {
-                             "planType": "STANDARD",
-                             "name": "test 5",
-                             "status": "PENDING_APPROVAL",
-                             "price": 4.5,
-                             "planContractDate": "2024-07-24",
-                             "startDate": "2024-07-24",
-                             "endDate": "2024-08-24",
-                             "trialPeriod": 10,
-                             "planConfigurations": [
-                               {
-                                   "name": "wsp_conversation_free",
-                                   "value": "500",
-                                   "id": 33
-                               },
-                               {
-                                   "name": "wsp_enable",
-                                   "value": "true",
-                                   "id": 34
-                               }
-                             ],
-                             "publish": false
-                           }
-                           """;
+            {
+                "planType": "STANDARD",
+                "name": "test 5",
+                "status": "PENDING_APPROVAL",
+                "price": 4.5,
+                "planContractDate": "2024-07-24",
+                "startDate": "2024-07-24",
+                "endDate": "2024-08-24",
+                "trialPeriod": 10,
+                "planConfigurations": [
+                  {
+                      "name": "wsp_conversation_free",
+                      "value": "500",
+                      "id": 33
+                  },
+                  {
+                      "name": "wsp_enable",
+                      "value": "true",
+                      "id": 34
+                  }
+                ],
+                "publish": false
+            }
+            """;
 
             // Arrange
             await using var application = new PlaygroundApplication();
@@ -142,30 +142,30 @@ namespace DopplerBeplic.Tests
         public async Task POST_plan_should_authorize_super_user_and_return_badrequest_statuscode()
         {
             var postData = """
-                           {
-                             "planType": "STANDARD",
-                             "name": "test 5",
-                             "status": "PENDING_APPROVAL",
-                             "price": 4.5,
-                             "planContractDate": "2024-07-24",
-                             "startDate": "2024-07-24",
-                             "endDate": "2024-08-24",
-                             "trialPeriod": 10,
-                             "planConfigurations": [
-                               {
-                                   "name": "wsp_conversation_free",
-                                   "value": "500",
-                                   "id": 33
-                               },
-                               {
-                                   "name": "wsp_enable",
-                                   "value": "true",
-                                   "id": 34
-                               }
-                             ],
-                             "publish": false
-                           }
-                           """;
+            {
+                "planType": "STANDARD",
+                "name": "test 5",
+                "status": "PENDING_APPROVAL",
+                "price": 4.5,
+                "planContractDate": "2024-07-24",
+                "startDate": "2024-07-24",
+                "endDate": "2024-08-24",
+                "trialPeriod": 10,
+                "planConfigurations": [
+                  {
+                      "name": "wsp_conversation_free",
+                      "value": "500",
+                      "id": 33
+                  },
+                  {
+                      "name": "wsp_enable",
+                      "value": "true",
+                      "id": 34
+                  }
+                ],
+                "publish": false
+            }
+            """;
 
             // Arrange
             await using var application = new PlaygroundApplication();
