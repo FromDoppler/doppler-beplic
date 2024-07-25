@@ -326,6 +326,47 @@ namespace DopplerBeplic.Services.Classes
             return result;
         }
 
+        public async Task<PlanCancellationResponse> CancelPlan(string idExternal)
+        {
+            var result = new PlanCancellationResponse();
+
+            try
+            {
+                var planCancellationData = new
+                {
+                    partner = _options.Customer.Partner,
+                    idExternal,
+                    idPlan = 0,
+                };
+
+                var response = await _sdk.ExecuteServiceResource("/services/beplicoreuser/api/v1/plans/assign-plan", planCancellationData, Method.Put);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var deserealizedResponse = JsonConvert.DeserializeObject<BeplicServiceResponse<object>>(response.Content ?? string.Empty);
+
+                    result.Success = true;
+                }
+                else
+                {
+                    var deserealizedResponse = JsonConvert.DeserializeObject<BeplicServiceResponse<object>>(response.Content ?? string.Empty);
+
+                    result.Success = false;
+                    result.Error = deserealizedResponse?.Message ?? "Unknown error";
+                    result.ErrorStatus = deserealizedResponse?.HttpStatusCode.ToString(CultureInfo.InvariantCulture) ?? "";
+
+                    LogInfoBadRequest(idExternal, response.Content ?? "", result.ErrorStatus);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogErrorException("Plan cancellation", ex);
+                throw;
+            }
+
+            return result;
+        }
+
         public async Task<PlanCreationResponse> CreatePlan(PlanCreationDTO planData)
         {
             var result = new PlanCreationResponse();
