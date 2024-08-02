@@ -8,7 +8,6 @@ using DopplerBeplic.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RestSharp;
-using System.Linq;
 
 namespace DopplerBeplic.Services.Classes
 {
