@@ -326,6 +326,34 @@ namespace DopplerBeplic.Services.Classes
             return result;
         }
 
+        public async Task<IEnumerable<RoomResponse>> GetRoomsByCustomer(int idExternal, int channelId)
+        {
+            var parameters = new Parameter[]
+                {
+                    Parameter.CreateParameter("idExternal",idExternal,ParameterType.QueryString),
+                    Parameter.CreateParameter("channelId", channelId, ParameterType.QueryString)
+                };
+            var response = await _sdk.ExecuteServiceResource("/services/partner/rooms", parameters, Method.Get);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var result = JsonConvert.DeserializeObject<BeplicServiceResponse<IEnumerable<BeplicRoomResponse>>>(response.Content ?? string.Empty);
+
+                Func<BeplicRoomResponse, RoomResponse> selector = x => new RoomResponse()
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    PhoneNumber = x.Phone
+                };
+
+                return result?.Data?.Select(selector) ?? Enumerable.Empty<RoomResponse>();
+            }
+            else
+            {
+                throw new BadHttpRequestException(response.Content ?? "");
+            }
+        }
+
         public async Task<PlanCancellationResponse> CancelPlan(string idExternal)
         {
             var result = new PlanCancellationResponse();

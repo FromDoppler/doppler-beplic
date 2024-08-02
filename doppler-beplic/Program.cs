@@ -231,6 +231,23 @@ app.MapPut("/plan/customer/{idExternal}/cancellation", async Task<Results<Ok<Pla
 .WithOpenApi()
 .RequireAuthorization(Policies.OnlySuperuser);
 
+app.MapGet("/customer/{idExternal}/rooms", async Task<Results<Ok<IEnumerable<RoomResponse>>, BadRequest<string>>> (int idExternal, IBeplicService beplicService) =>
+{
+    try
+    {
+        var response = await beplicService.GetRoomsByCustomer(idExternal, 1);
+
+        return TypedResults.Ok(response);
+    }
+    catch (Exception e)
+    {
+        return TypedResults.BadRequest(e.Message);
+    }
+})
+.WithName("Rooms")
+.WithOpenApi()
+.RequireAuthorization(Policies.OnlySuperuser);
+
 app.Run();
 
 // Make the implicit Program class public so test projects can access it
