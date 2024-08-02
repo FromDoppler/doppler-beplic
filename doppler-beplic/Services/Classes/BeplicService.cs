@@ -354,6 +354,41 @@ namespace DopplerBeplic.Services.Classes
             }
         }
 
+        public async Task<IEnumerable<TemplateResponse>> GetTemplatesByRoom(int roomId)
+        {
+            var bodyParams = new
+            {
+                roomId
+            };
+
+            var response = await _sdk.ExecuteServiceResource("/services/partner/templates/room", bodyParams, Method.Post);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var result = JsonConvert.DeserializeObject<BeplicServiceResponse<IEnumerable<BeplicTemplateResponse>>>(response.Content ?? string.Empty);
+
+                Func<BeplicTemplateResponse, TemplateResponse> selector = x => new TemplateResponse()
+                {
+                    BodyAmount = x.BodyAmount ?? 0,
+                    BodyText = x.BodyText,
+                    Category = x.Category,
+                    FooterText = x.FooterText,
+                    HeaderAmount = x.HeaderAmount ?? 0,
+                    HeaderText = x.HeaderText,
+                    HeaderType = x.HeaderType,
+                    Id = x.Id,
+                    Name = x.Name,
+                    Language = x.Language
+                };
+
+                return result?.Data?.Select(selector) ?? Enumerable.Empty<TemplateResponse>();
+            }
+            else
+            {
+                throw new BadHttpRequestException(response.Content ?? "");
+            }
+        }
+
         public async Task<PlanCancellationResponse> CancelPlan(string idExternal)
         {
             var result = new PlanCancellationResponse();
