@@ -350,7 +350,12 @@ namespace DopplerBeplic.Services.Classes
             }
             else
             {
-                throw new BadHttpRequestException(response.Content ?? "");
+                var errorResponse = JsonConvert.DeserializeObject<BeplicServiceResponse<dynamic>>(response.Content ?? string.Empty);
+
+                var message = errorResponse?.Message ?? string.Empty;
+                var statusCode = errorResponse?.HttpStatusCode ?? (int)HttpStatusCode.InternalServerError;
+
+                throw new BadHttpRequestException(message, statusCode);
             }
         }
 
@@ -385,7 +390,12 @@ namespace DopplerBeplic.Services.Classes
             }
             else
             {
-                throw new BadHttpRequestException(response.Content ?? "");
+                var errorResponse = JsonConvert.DeserializeObject<BeplicServiceResponse<dynamic>>(response.Content ?? string.Empty);
+
+                var message = errorResponse?.Message ?? string.Empty;
+                var statusCode = errorResponse?.HttpStatusCode ?? (int)HttpStatusCode.InternalServerError;
+
+                throw new BadHttpRequestException(message, statusCode);
             }
         }
 
