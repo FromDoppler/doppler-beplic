@@ -15,6 +15,8 @@ namespace DopplerBeplic.Services.Interfaces
 
         Task<IEnumerable<PlanResponse>> GetPlans();
 
+        Task<TemplateMessageResponse> SendTemplateMessage(int roomId, int templateId, TemplateMessageDTO messageDTO);
+
         Task<IEnumerable<RoomResponse>> GetRoomsByCustomer(int idExternal, int channelId);
 
         Task<IEnumerable<TemplateResponse>> GetTemplatesByRoom(int roomId);
