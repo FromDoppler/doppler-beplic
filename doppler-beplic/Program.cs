@@ -266,6 +266,23 @@ app.MapGet("/customer/rooms/{roomId}/templates", async Task<Results<Ok<IEnumerab
 .WithOpenApi()
 .RequireAuthorization(Policies.OnlySuperuser);
 
+app.MapPost("/customer/rooms/{roomId}/templates/{templateId}/message", async Task<Results<Ok<TemplateMessageResponse>, BadRequest<string>>> (int roomId, int templateId, [FromBody] TemplateMessageDTO message, IBeplicService beplicService) =>
+{
+    try
+    {
+        var response = await beplicService.SendTemplateMessage(roomId, templateId, message);
+
+        return TypedResults.Ok(response);
+    }
+    catch (Exception e)
+    {
+        return TypedResults.BadRequest(e.Message);
+    }
+})
+.WithName("SendMessage")
+.WithOpenApi()
+.RequireAuthorization(Policies.OnlySuperuser);
+
 app.Run();
 
 // Make the implicit Program class public so test projects can access it

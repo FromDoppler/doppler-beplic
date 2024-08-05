@@ -326,6 +326,43 @@ namespace DopplerBeplic.Services.Classes
             return result;
         }
 
+        public async Task<TemplateMessageResponse> SendTemplateMessage(int roomId, int templateId, TemplateMessageDTO messageDTO)
+        {
+            var bodyParams = new
+            {
+                channel = "1",
+                roomId,
+                templateId,
+                phoneNumber = messageDTO.PhoneNumber,
+                phoneNumberBusiness = messageDTO.PhoneNumberBusiness,
+                link = messageDTO.Link,
+                headerType = "TEXT",
+                parameterHeader = messageDTO?.HeaderParameters?.Length > 0 ? messageDTO.HeaderParameters[0] : null,
+                parametersBody = messageDTO?.BodyParameters
+            };
+
+            var response = await _sdk.ExecuteServiceResource("/services/partner/conversation/templates/message-out", bodyParams, Method.Post);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var result = JsonConvert.DeserializeObject<BeplicServiceResponse<BeplicTemplateMessageResponse>>(response.Content ?? string.Empty);
+
+                return new TemplateMessageResponse()
+                {
+                    MessageId = result?.Data?.MessageId
+                };
+            }
+            else
+            {
+                var errorResponse = JsonConvert.DeserializeObject<BeplicServiceResponse<dynamic>>(response.Content ?? string.Empty);
+
+                var message = errorResponse?.Message ?? string.Empty;
+                var statusCode = errorResponse?.HttpStatusCode ?? (int)HttpStatusCode.InternalServerError;
+
+                throw new BadHttpRequestException(message, statusCode);
+            }
+        }
+
         public async Task<IEnumerable<RoomResponse>> GetRoomsByCustomer(int idExternal, int channelId)
         {
             var parameters = new Parameter[]
