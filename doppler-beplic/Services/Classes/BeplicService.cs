@@ -30,6 +30,9 @@ namespace DopplerBeplic.Services.Classes
         [LoggerMessage(1, LogLevel.Error, "Unexpected exception thrown for UserId:{UserId}.")]
         partial void LogErrorException(string userId, Exception e);
 
+        [LoggerMessage(1, LogLevel.Error, "Error from method: {method}. Message: {message}.")]
+        partial void LogErrorMethod(string method, string message);
+
         public async Task<UserCreationResponse> CreateUser(UserCreationDTO accountData)
         {
             accountData.Customer.Partner ??= _options.Customer.Partner;
@@ -359,6 +362,8 @@ namespace DopplerBeplic.Services.Classes
                 var message = errorResponse?.Message ?? string.Empty;
                 var statusCode = errorResponse?.HttpStatusCode ?? (int)HttpStatusCode.InternalServerError;
 
+                LogErrorMethod("SendTemplateMessage", response.Content ?? message);
+
                 throw new BadHttpRequestException(message, statusCode);
             }
         }
@@ -391,6 +396,8 @@ namespace DopplerBeplic.Services.Classes
 
                 var message = errorResponse?.Message ?? string.Empty;
                 var statusCode = errorResponse?.HttpStatusCode ?? (int)HttpStatusCode.InternalServerError;
+
+                LogErrorMethod("GetRoomsByCustomer", response.Content ?? message);
 
                 throw new BadHttpRequestException(message, statusCode);
             }
@@ -431,6 +438,8 @@ namespace DopplerBeplic.Services.Classes
 
                 var message = errorResponse?.Message ?? string.Empty;
                 var statusCode = errorResponse?.HttpStatusCode ?? (int)HttpStatusCode.InternalServerError;
+
+                LogErrorMethod("GetTemplatesByRoom", response.Content ?? message);
 
                 throw new BadHttpRequestException(message, statusCode);
             }
