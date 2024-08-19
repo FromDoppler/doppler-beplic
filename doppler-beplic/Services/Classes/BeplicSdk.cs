@@ -24,63 +24,39 @@ namespace DopplerBeplic.Services.Classes
             _serviceClient = GetServiceClient();
         }
 
-        public async Task<RestResponse> ExecuteApiResource(string resource, object body, Method metod)
+        public async Task<RestResponse> ExecuteApiResource(string resource, object body, Method method)
         {
             await EnsureAuthentication();
 
-            var request = new RestRequest(resource, metod);
-            request.AddJsonBody(body);
-            request.AddHeader("Content-Type", "application/json");
-            request.AddHeader("Authorization", "Bearer " + AccessToken);
-
-            return await _apiClient.ExecuteAsync(request);
+            return await _apiClient.ExecuteResource(AccessToken ?? string.Empty, resource, body, method);
         }
 
-        public async Task<RestResponse> ExecuteApiResource(string resource, Parameter[] parameters, Method metod)
+        public async Task<RestResponse> ExecuteApiResource(string resource, Parameter[] parameters, Method method)
         {
             await EnsureAuthentication();
 
-            var request = new RestRequest(resource, metod);
-            request.AddHeader("Content-Type", "application/json");
-            request.AddHeader("Authorization", "Bearer " + AccessToken);
-            request.Parameters.AddParameters(parameters);
-
-            return await _apiClient.ExecuteAsync(request);
+            return await _apiClient.ExecuteResource(AccessToken ?? string.Empty, resource, parameters, method);
         }
 
-        public async Task<RestResponse> ExecuteServiceResource(string resource, Method metod)
+        public async Task<RestResponse> ExecuteServiceResource(string resource, Method method)
         {
             await EnsureAuthentication();
 
-            var request = new RestRequest(resource, metod);
-            request.AddHeader("Content-Type", "application/json");
-            request.AddHeader("Authorization", "Bearer " + AccessToken);
-
-            return await _serviceClient.ExecuteAsync(request);
+            return await _serviceClient.ExecuteResource(AccessToken ?? string.Empty, resource, method);
         }
 
-        public async Task<RestResponse> ExecuteServiceResource(string resource, object body, Method metod)
+        public async Task<RestResponse> ExecuteServiceResource(string resource, object body, Method method)
         {
             await EnsureAuthentication();
 
-            var request = new RestRequest(resource, metod);
-            request.AddJsonBody(body);
-            request.AddHeader("Content-Type", "application/json");
-            request.AddHeader("Authorization", "Bearer " + AccessToken);
-
-            return await _serviceClient.ExecuteAsync(request);
+            return await _serviceClient.ExecuteResource(AccessToken ?? string.Empty, resource, body, method);
         }
 
-        public async Task<RestResponse> ExecuteServiceResource(string resource, Parameter[] parameters, Method metod)
+        public async Task<RestResponse> ExecuteServiceResource(string resource, Parameter[] parameters, Method method)
         {
             await EnsureAuthentication();
 
-            var request = new RestRequest(resource, metod);
-            request.AddHeader("Content-Type", "application/json");
-            request.AddHeader("Authorization", "Bearer " + AccessToken);
-            request.Parameters.AddParameters(parameters);
-
-            return await _serviceClient.ExecuteAsync(request);
+            return await _serviceClient.ExecuteResource(AccessToken ?? string.Empty, resource, parameters, method);
         }
 
         private RestClient GetApiClient()
