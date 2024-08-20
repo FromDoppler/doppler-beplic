@@ -12,5 +12,6 @@ namespace DopplerBeplic.Models.Responses
         public int HeaderAmount { get; set; }
         public int BodyAmount { get; set; }
         public string? FooterText { get; set; }
+        public string? PublicPreviewUrl { get; set; }
     }
 }

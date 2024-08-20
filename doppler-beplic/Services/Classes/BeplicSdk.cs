@@ -59,6 +59,15 @@ namespace DopplerBeplic.Services.Classes
             return await _serviceClient.ExecuteResource(AccessToken ?? string.Empty, resource, parameters, method);
         }
 
+        public string GetServiceFullUrl(string resource, Parameter[] parameters)
+        {
+            var request = new RestRequest(resource, Method.Get);
+
+            request.Parameters.AddParameters(parameters);
+
+            return _serviceClient.BuildUri(request).AbsoluteUri;
+        }
+
         private RestClient GetApiClient()
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls13;
