@@ -415,6 +415,7 @@ namespace DopplerBeplic.Services.Classes
             if (response.IsSuccessStatusCode)
             {
                 var result = JsonConvert.DeserializeObject<BeplicServiceResponse<IEnumerable<BeplicTemplateResponse>>>(response.Content ?? string.Empty);
+                var filteredResults = result?.Data?.Where(x => !string.IsNullOrEmpty(x.Status) && x.Status.Equals("approved", StringComparison.OrdinalIgnoreCase));
 
                 Func<BeplicTemplateResponse, TemplateResponse> selector = x => new TemplateResponse()
                 {
@@ -447,7 +448,7 @@ namespace DopplerBeplic.Services.Classes
                         Parameter.CreateParameter("fileId", x.FieldId, ParameterType.QueryString)})
                 };
 
-                return result?.Data?.Select(selector) ?? Enumerable.Empty<TemplateResponse>();
+                return filteredResults?.Select(selector) ?? Enumerable.Empty<TemplateResponse>();
             }
             else
             {
