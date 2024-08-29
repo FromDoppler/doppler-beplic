@@ -187,6 +187,24 @@ app.MapGet("/plan", async Task<Results<Ok<IEnumerable<PlanResponse>>, BadRequest
 .WithOpenApi()
 .RequireAuthorization(Policies.OnlySuperuser);
 
+app.MapGet("/plan/{idExternal}", async Task<Results<Ok<UserPlanResponse>, BadRequest<string>>> (int idExternal,
+    IBeplicService beplicService) =>
+{
+    try
+    {
+        var response = await beplicService.GetUserPlan(idExternal);
+
+        return TypedResults.Ok(response);
+    }
+    catch (Exception ex)
+    {
+        return TypedResults.BadRequest($"Failed to get user plan {ex.Message}");
+    }
+})
+.WithName("GetUserPlan")
+.WithOpenApi()
+.RequireAuthorization(Policies.OnlySuperuser);
+
 app.MapPost("/plan", async Task<Results<Created<PlanCreationResponse>, BadRequest<PlanCreationResponse>>> (
     IBeplicService beplicService,
     [FromBody] PlanCreationDTO planData) =>
