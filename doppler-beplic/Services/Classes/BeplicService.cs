@@ -539,5 +539,38 @@ namespace DopplerBeplic.Services.Classes
 
             return result;
         }
+
+        public async Task<UserPlanResponse> GetUserPlan(int idExternal)
+        {
+            var parameters = new Parameter[]
+            {
+                Parameter.CreateParameter("externalId", idExternal, ParameterType.QueryString)
+            };
+
+            var response = await _sdk.ExecuteServiceResource("/services/beplicoreuser/api/v1/plans/customer-plan", parameters, Method.Get);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var deserealizedResponse = JsonConvert.DeserializeObject<BeplicServiceResponse<BeplicUserPlanResponse>>(response.Content ?? string.Empty);
+
+                return new UserPlanResponse()
+                {
+                    Name = deserealizedResponse?.Data?.Name,
+                    ActiveDate = deserealizedResponse?.Data?.ActiveDate,
+                    TrialPeriod = deserealizedResponse?.Data?.TrialPeriod,
+                };
+            }
+            else
+            {
+                var errorResponse = JsonConvert.DeserializeObject<BeplicServiceResponse<dynamic>>(response.Content ?? string.Empty);
+
+                var message = errorResponse?.Message ?? string.Empty;
+                var statusCode = errorResponse?.HttpStatusCode ?? (int)HttpStatusCode.InternalServerError;
+
+                LogErrorMethod("GetUserPlan", response.Content ?? message);
+
+                throw new BadHttpRequestException(message, statusCode);
+            }
+        }
     }
 }

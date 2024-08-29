@@ -26,5 +26,7 @@ namespace DopplerBeplic.Services.Interfaces
         Task<PlanAssignResponse> PlanAssign(PlanAssignmentDTO planAssignData);
 
         Task<PlanCancellationResponse> CancelPlan(string idExternal);
+
+        Task<UserPlanResponse> GetUserPlan(int idExternal);
     }
 }
