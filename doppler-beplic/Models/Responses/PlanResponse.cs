@@ -12,5 +12,6 @@ namespace DopplerBeplic.Models.Responses
         public string StartDate { get; set; } = string.Empty;
         public string EndDate { get; set; } = string.Empty;
         public int? TrialPeriod { get; set; }
+        public bool? IsFree { get; set; }
     }
 }
