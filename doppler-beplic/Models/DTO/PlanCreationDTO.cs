@@ -25,6 +25,9 @@ namespace DopplerBeplic.Models.DTO
         [JsonProperty("endDate")]
         public required string EndDate { get; set; }
 
+        [JsonProperty("isFree")]
+        public required string IsFree { get; set; }
+
         [JsonProperty("trialPeriod")]
         public required int TrialPeriod { get; set; }
 
