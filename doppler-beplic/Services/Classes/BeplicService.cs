@@ -429,6 +429,7 @@ namespace DopplerBeplic.Services.Classes
                     Id = x.Id,
                     Name = x.Name,
                     Language = x.Language,
+                    ParameterHeader = x.ParameterHeader,
                     PublicPreviewUrl = _sdk.GetServiceFullUrl("/external-template", new Parameter[] {
                         Parameter.CreateParameter("bodyText", x.BodyText,ParameterType.QueryString),
                         Parameter.CreateParameter("footerText", x.FooterText, ParameterType.QueryString),
