@@ -339,7 +339,7 @@ namespace DopplerBeplic.Services.Classes
                 phoneNumber = messageDTO.PhoneNumber,
                 phoneNumberBusiness = messageDTO.PhoneNumberBusiness,
                 link = messageDTO.Link,
-                headerType = "TEXT",
+                headerType = messageDTO.HeaderType,
                 parameterHeader = messageDTO?.HeaderParameters?.Length > 0 ? messageDTO.HeaderParameters[0] : null,
                 parametersBody = messageDTO?.BodyParameters
             };
