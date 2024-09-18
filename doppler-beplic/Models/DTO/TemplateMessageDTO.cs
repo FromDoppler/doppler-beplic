@@ -4,6 +4,7 @@ namespace DopplerBeplic.Models.DTO
     {
         public string? PhoneNumber { get; set; }
         public string? PhoneNumberBusiness { get; set; }
+        public string? HeaderType { get; set; }
         public string[]? HeaderParameters { get; set; }
         public string[]? BodyParameters { get; set; }
         public string? Link { get; set; }
