@@ -50,5 +50,7 @@ namespace DopplerBeplic.Models.DTO
         public string? PlanName { get; set; }
         [JsonProperty("messageLimit")]
         public int? MessageLimit { get; set; }
+        [JsonProperty("expirationDate")]
+        public string? ExpirationDate { get; set; }
     }
 }

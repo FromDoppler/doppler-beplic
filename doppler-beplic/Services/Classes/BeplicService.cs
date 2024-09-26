@@ -40,11 +40,12 @@ namespace DopplerBeplic.Services.Classes
             accountData.Customer.LegalName ??= _options.Customer.LegalName;
             accountData.Customer.Address ??= _options.Customer.Address;
             accountData.Customer.Cuit ??= _options.Customer.Cuit;
-            accountData.Customer.Plan ??= new UserCreationPlan
+            accountData.Customer.Plan = new UserCreationPlan
             {
                 IdPlan = _options.Plan.Id,
                 PlanName = _options.Plan.Name,
-                MessageLimit = _options.Plan.MessageLimit
+                MessageLimit = _options.Plan.MessageLimit,
+                ExpirationDate = accountData.Customer.Plan?.ExpirationDate
             };
 
             var result = new UserCreationResponse();
