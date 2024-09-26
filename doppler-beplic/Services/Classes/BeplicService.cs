@@ -418,36 +418,45 @@ namespace DopplerBeplic.Services.Classes
                 var result = JsonConvert.DeserializeObject<BeplicServiceResponse<IEnumerable<BeplicTemplateResponse>>>(response.Content ?? string.Empty);
                 var filteredResults = result?.Data?.Where(x => !string.IsNullOrEmpty(x.Status) && x.Status.Equals("approved", StringComparison.OrdinalIgnoreCase));
 
-                Func<BeplicTemplateResponse, TemplateResponse> selector = x => new TemplateResponse()
+                Func<BeplicTemplateResponse, TemplateResponse> selector = x =>
                 {
-                    BodyAmount = x.BodyAmount ?? 0,
-                    BodyText = x.BodyText,
-                    Category = x.Category,
-                    FooterText = x.FooterText,
-                    HeaderAmount = x.HeaderAmount ?? 0,
-                    HeaderText = x.HeaderText,
-                    HeaderType = x.HeaderType,
-                    Id = x.Id,
-                    Name = x.Name,
-                    Language = x.Language,
-                    ParameterHeader = x.ParameterHeader,
-                    PublicPreviewUrl = _sdk.GetServiceFullUrl("/external-template", new Parameter[] {
+                    var parameters = new List<Parameter> {
                         Parameter.CreateParameter("bodyText", x.BodyText,ParameterType.QueryString),
                         Parameter.CreateParameter("footerText", x.FooterText, ParameterType.QueryString),
                         Parameter.CreateParameter("headerText", x.HeaderText, ParameterType.QueryString),
                         Parameter.CreateParameter("botonPhone", x.BotonPhone, ParameterType.QueryString),
-                        Parameter.CreateParameter("botonUrl", x.BotonUrl, ParameterType.QueryString),
                         Parameter.CreateParameter("labelPhone", x.LabelPhone, ParameterType.QueryString),
-                        Parameter.CreateParameter("labelUrl", x.LabelUrl, ParameterType.QueryString),
-                        Parameter.CreateParameter("parameterHeader", x.ParameterHeader, ParameterType.QueryString),
-                        Parameter.CreateParameter("parameter1Body", x.Parameter1Body, ParameterType.QueryString),
-                        Parameter.CreateParameter("parameter2Body", x.Parameter2Body, ParameterType.QueryString),
-                        Parameter.CreateParameter("parameter3Body", x.Parameter3Body, ParameterType.QueryString),
                         Parameter.CreateParameter("quickReply1", x.QuickReply1, ParameterType.QueryString),
                         Parameter.CreateParameter("quickReply2", x.QuickReply2, ParameterType.QueryString),
                         Parameter.CreateParameter("quickReply3", x.QuickReply3, ParameterType.QueryString),
-                        Parameter.CreateParameter("headerType", x.HeaderType, ParameterType.QueryString),
-                        Parameter.CreateParameter("fileId", x.FieldId, ParameterType.QueryString)})
+                        Parameter.CreateParameter("headerType", x.HeaderType, ParameterType.QueryString)
+                    };
+
+                    if (!string.IsNullOrEmpty(x.HeaderType) && !x.HeaderType.Equals("TEXT", StringComparison.OrdinalIgnoreCase))
+                    {
+                        parameters.Add(Parameter.CreateParameter("parameterHeader", x.ParameterHeader, ParameterType.QueryString));
+                    }
+
+                    if (x.FieldId != null)
+                    {
+                        parameters.Add(Parameter.CreateParameter("fileId", x.FieldId, ParameterType.QueryString));
+                    }
+
+                    return new TemplateResponse()
+                    {
+                        BodyAmount = x.BodyAmount ?? 0,
+                        BodyText = x.BodyText,
+                        Category = x.Category,
+                        FooterText = x.FooterText,
+                        HeaderAmount = x.HeaderAmount ?? 0,
+                        HeaderText = x.HeaderText,
+                        HeaderType = x.HeaderType,
+                        Id = x.Id,
+                        Name = x.Name,
+                        Language = x.Language,
+                        ParameterHeader = x.ParameterHeader,
+                        PublicPreviewUrl = _sdk.GetServiceFullUrl("/external-template", parameters.ToArray())
+                    };
                 };
 
                 return filteredResults?.Select(selector) ?? Enumerable.Empty<TemplateResponse>();
