@@ -35,6 +35,28 @@ namespace DopplerBeplic.Services.Classes
 
         public async Task<UserCreationResponse> CreateUser(UserCreationDTO accountData)
         {
+            var result = new UserCreationResponse();
+
+            var planFree = (await GetPlans()).FirstOrDefault(x => x.IsFree ?? false);
+
+            if (planFree?.Id is null)
+            {
+                LogInfoBadRequest(accountData.Customer.IdExternal, "Plan free not found", HttpStatusCode.InternalServerError.ToString());
+                result.Success = false;
+                result.ErrorStatus = HttpStatusCode.InternalServerError.ToString();
+                result.Error = "Plan free not found";
+
+                return result;
+            }
+
+            var expirationData = accountData.Customer.Plan?.ExpirationDate is not null
+                ? Convert.ToDateTime(accountData.Customer.Plan.ExpirationDate, CultureInfo.InvariantCulture)
+                    .ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)
+                : DateTime.UtcNow.Date
+                    .AddDays(1)
+                    .AddDays(planFree.TrialPeriod ?? 90)
+                    .ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+
             accountData.Customer.Partner ??= _options.Customer.Partner;
             accountData.Customer.BusinessName ??= _options.Customer.BusinessName;
             accountData.Customer.LegalName ??= _options.Customer.LegalName;
@@ -42,13 +64,10 @@ namespace DopplerBeplic.Services.Classes
             accountData.Customer.Cuit ??= _options.Customer.Cuit;
             accountData.Customer.Plan = new UserCreationPlan
             {
-                IdPlan = _options.Plan.Id,
-                PlanName = _options.Plan.Name,
-                MessageLimit = _options.Plan.MessageLimit,
-                ExpirationDate = accountData.Customer.Plan?.ExpirationDate
+                Id = planFree.Id.Value,
+                PlanName = planFree.Name,
+                ExpirationDate = expirationData
             };
-
-            var result = new UserCreationResponse();
 
             try
             {

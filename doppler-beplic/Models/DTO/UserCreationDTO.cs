@@ -44,8 +44,8 @@ namespace DopplerBeplic.Models.DTO
 
     public class UserCreationPlan
     {
-        [JsonProperty("idPlan")]
-        public int? IdPlan { get; set; }
+        [JsonProperty("id")]
+        public int? Id { get; set; }
         [JsonProperty("name")]
         public string? PlanName { get; set; }
         [JsonProperty("messageLimit")]
