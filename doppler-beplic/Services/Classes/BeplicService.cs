@@ -49,7 +49,7 @@ namespace DopplerBeplic.Services.Classes
                 return result;
             }
 
-            var expirationData = accountData.Customer.Plan?.ExpirationDate is not null
+            var expirationDate = accountData.Customer.Plan?.ExpirationDate is not null
                 ? Convert.ToDateTime(accountData.Customer.Plan.ExpirationDate, CultureInfo.InvariantCulture)
                     .ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)
                 : DateTime.UtcNow.Date
@@ -66,7 +66,7 @@ namespace DopplerBeplic.Services.Classes
             {
                 Id = planFree.Id.Value,
                 PlanName = planFree.Name,
-                ExpirationDate = expirationData
+                ExpirationDate = expirationDate
             };
 
             try
