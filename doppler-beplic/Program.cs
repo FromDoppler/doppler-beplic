@@ -267,6 +267,23 @@ app.MapGet("/customer/{idExternal}/rooms", async Task<Results<Ok<IEnumerable<Roo
 .RequireAuthorization(Policies.OnlySuperuser);
 
 
+app.MapGet("/customer/messages/{messageId}", async Task<Results<Ok<TemplateMessageResponse>, BadRequest<string>>> (string messageId, IBeplicService beplicService) =>
+{
+    try
+    {
+        var response = await beplicService.GetMessageStatus(messageId);
+
+        return TypedResults.Ok(response);
+    }
+    catch (Exception e)
+    {
+        return TypedResults.BadRequest(e.Message);
+    }
+})
+.WithName("MessageStatus")
+.WithOpenApi()
+.RequireAuthorization(Policies.OnlySuperuser);
+
 app.MapGet("/customer/rooms/{roomId}/templates", async Task<Results<Ok<IEnumerable<TemplateResponse>>, BadRequest<string>>> (int roomId, IBeplicService beplicService) =>
 {
     try

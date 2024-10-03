@@ -28,5 +28,6 @@ namespace DopplerBeplic.Services.Interfaces
         Task<PlanCancellationResponse> CancelPlan(string idExternal);
 
         Task<UserPlanResponse> GetUserPlan(int idExternal);
+        Task<TemplateMessageResponse> GetMessageStatus(string messageId);
     }
 }
