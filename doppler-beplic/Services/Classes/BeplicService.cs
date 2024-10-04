@@ -330,6 +330,41 @@ namespace DopplerBeplic.Services.Classes
             return result;
         }
 
+        public async Task<TemplateMessageResponse> GetMessageStatus(string messageId)
+        {
+            var parameters = new Parameter[]
+            {
+                Parameter.CreateParameter("messageId",messageId,ParameterType.UrlSegment)
+            };
+            var response = await _sdk.ExecuteServiceResource("/services/partner/messages/{messageId}", parameters, Method.Get);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var result = JsonConvert.DeserializeObject<BeplicServiceResponse<List<BeplicTemplateMessageStatusResponse>>>(response.Content ?? string.Empty);
+
+                return new TemplateMessageResponse()
+                {
+                    MessageId = messageId,
+                    Status = result?.Data?.Select(x => new TemplateMessageStatusResponse()
+                    {
+                        Status = x.Status,
+                        StatusDate = x.StatusDate,
+                    }).ToList(),
+                };
+            }
+            else
+            {
+                var errorResponse = JsonConvert.DeserializeObject<BeplicServiceResponse<dynamic>>(response.Content ?? string.Empty);
+
+                var message = errorResponse?.Message ?? string.Empty;
+                var statusCode = errorResponse?.HttpStatusCode ?? (int)HttpStatusCode.InternalServerError;
+
+                LogErrorMethod("GetMessageStatus", response.Content ?? message);
+
+                throw new BadHttpRequestException(message, statusCode);
+            }
+        }
+
         public async Task<TemplateMessageResponse> SendTemplateMessage(int roomId, int templateId, TemplateMessageDTO messageDTO)
         {
             var bodyParams = new
