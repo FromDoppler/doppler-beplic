@@ -534,11 +534,16 @@ namespace DopplerBeplic.Services.Classes
 
             try
             {
+                //Get plan free from beplic
+                var planFree = (await GetPlans())
+                    .Where(x => x.IsFree.HasValue && x.IsFree.Value)
+                    .FirstOrDefault();
+
                 var planCancellationData = new
                 {
                     partner = _options.Customer.Partner,
                     idExternal,
-                    idPlan = 0,
+                    idPlan = planFree != null ? planFree.Id : 0,
                 };
 
                 var response = await _sdk.ExecuteServiceResource("/services/beplicoreuser/api/v1/plans/assign-plan", planCancellationData, Method.Put);
