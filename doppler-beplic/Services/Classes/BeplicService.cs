@@ -535,30 +535,23 @@ namespace DopplerBeplic.Services.Classes
 
             try
             {
-                var planCancellationData = new
+                var planFree = (await GetPlans()).FirstOrDefault(x => x.IsFree ?? false);
+                var setFreePlan = new PlanAssignmentDTO
                 {
-                    partner = _options.Customer.Partner,
-                    idExternal,
-                    idPlan = 0,
+                    IdExternal = idExternal,
+                    IdPlan = planFree != null ? planFree.Id ?? 0 : 0,
                 };
 
-                var response = await _sdk.ExecuteServiceResource("/services/beplicoreuser/api/v1/plans/assign-plan", planCancellationData, Method.Put);
-
-                if (response.IsSuccessStatusCode)
+                var assingPlanResponse = await PlanAssign(setFreePlan);
+                if (assingPlanResponse.Success)
                 {
-                    var deserealizedResponse = JsonConvert.DeserializeObject<BeplicServiceResponse<object>>(response.Content ?? string.Empty);
-
                     result.Success = true;
                 }
                 else
                 {
-                    var deserealizedResponse = JsonConvert.DeserializeObject<BeplicServiceResponse<object>>(response.Content ?? string.Empty);
-
                     result.Success = false;
-                    result.Error = deserealizedResponse?.Message ?? "Unknown error";
-                    result.ErrorStatus = deserealizedResponse?.HttpStatusCode.ToString(CultureInfo.InvariantCulture) ?? "";
-
-                    LogInfoBadRequest(idExternal, response.Content ?? "", result.ErrorStatus);
+                    result.Error = assingPlanResponse.Error;
+                    result.ErrorStatus = assingPlanResponse.ErrorStatus;
                 }
             }
             catch (Exception ex)
