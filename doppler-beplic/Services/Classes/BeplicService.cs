@@ -368,6 +368,7 @@ namespace DopplerBeplic.Services.Classes
                     {
                         Status = x.Status,
                         StatusDate = x.StatusDate,
+                        Detail = x.Detail != null ? $"{x.Detail?.Code}:{x.Detail?.Title} Description:{x.Detail?.Description}" : null
                     }).ToList(),
                 };
             }
