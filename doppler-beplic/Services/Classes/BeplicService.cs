@@ -638,5 +638,11 @@ namespace DopplerBeplic.Services.Classes
                 throw new BadHttpRequestException(message, statusCode);
             }
         }
+
+        public Task<int> GetConversationsByCustomerAndDates(int idExternal, string dateFrom, string dateTo)
+        {
+            //TODO: Integrate with endpoint of the beplic's team
+            return Task.FromResult(0);
+        }
     }
 }

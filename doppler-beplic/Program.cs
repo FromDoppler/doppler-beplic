@@ -318,6 +318,27 @@ app.MapPost("/customer/rooms/{roomId}/templates/{templateId}/message", async Tas
 .WithOpenApi()
 .RequireAuthorization(Policies.OnlySuperuser);
 
+app.MapGet("/customer/{idExternal}/conversations", async Task<Results<Ok<int>, BadRequest<string>>> (
+    int idExternal,
+    IBeplicService beplicService,
+    [FromQuery] string dateFrom,
+    [FromQuery] string dateTo) =>
+{
+    try
+    {
+        var response = await beplicService.GetConversationsByCustomerAndDates(idExternal, dateFrom, dateTo);
+
+        return TypedResults.Ok(response);
+    }
+    catch (Exception e)
+    {
+        return TypedResults.BadRequest(e.Message);
+    }
+})
+.WithName("GetConversationsByExternalId")
+.WithOpenApi()
+.RequireAuthorization(Policies.OnlySuperuser);
+
 app.Run();
 
 // Make the implicit Program class public so test projects can access it

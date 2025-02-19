@@ -29,5 +29,6 @@ namespace DopplerBeplic.Services.Interfaces
 
         Task<UserPlanResponse> GetUserPlan(int idExternal);
         Task<TemplateMessageResponse> GetMessageStatus(string messageId);
+        Task<int> GetConversationsByCustomerAndDates(int idExternal, string dateFrom, string dateTo);
     }
 }
