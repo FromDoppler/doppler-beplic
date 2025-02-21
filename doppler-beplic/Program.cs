@@ -318,8 +318,8 @@ app.MapPost("/customer/rooms/{roomId}/templates/{templateId}/message", async Tas
 .WithOpenApi()
 .RequireAuthorization(Policies.OnlySuperuser);
 
-app.MapGet("/customer/{idExternal}/conversations", async Task<Results<Ok<int>, BadRequest<string>>> (
-    int idExternal,
+app.MapGet("/customer/{idExternal}/conversations", async Task<Results<Ok<int?>, BadRequest<string>>> (
+    string idExternal,
     IBeplicService beplicService,
     [FromQuery] string dateFrom,
     [FromQuery] string dateTo) =>
@@ -328,7 +328,9 @@ app.MapGet("/customer/{idExternal}/conversations", async Task<Results<Ok<int>, B
     {
         var response = await beplicService.GetConversationsByCustomerAndDates(idExternal, dateFrom, dateTo);
 
-        return TypedResults.Ok(response);
+        return response.Success ?
+        TypedResults.Ok(response.Conversations) :
+        TypedResults.BadRequest("");
     }
     catch (Exception e)
     {
