@@ -639,10 +639,46 @@ namespace DopplerBeplic.Services.Classes
             }
         }
 
-        public Task<int> GetConversationsByCustomerAndDates(int idExternal, string dateFrom, string dateTo)
+        public async Task<GetConversationsByCustomerAndDatesResponse> GetConversationsByCustomerAndDates(string idExternal, string dateFrom, string dateTo)
         {
-            //TODO: Integrate with endpoint of the beplic's team
-            return Task.FromResult(0);
+            var result = new GetConversationsByCustomerAndDatesResponse();
+
+            try
+            {
+                var body = new
+                {
+                    idExternal,
+                    startDate = dateFrom,
+                    endDate = dateTo,
+                };
+
+                var response = await _sdk.ExecuteServiceResource("/services/beplicpartners/v1/integra/customers/conversation-count", body, Method.Post);
+                var deserealizedResponse = JsonConvert.DeserializeObject<BeplicServiceResponse<ConversationCountResponse>>(response.Content ?? string.Empty);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    result.Success = true;
+                    result.Conversations = deserealizedResponse?.Data?.Conversations;
+                }
+                else
+                {
+                    result.Success = false;
+                    result.Error = deserealizedResponse?.Message ?? "Unknown error";
+                    result.ErrorStatus = deserealizedResponse?.HttpStatusCode.ToString(CultureInfo.InvariantCulture) ?? "";
+                    result.Conversations = deserealizedResponse?.Data?.Conversations;
+
+                    LogInfoBadRequest(idExternal, response.Content ?? "", result.ErrorStatus);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogErrorException(idExternal, ex);
+                result.Success = false;
+                result.Error = ex.Message;
+                result.Conversations = null;
+            }
+
+            return result;
         }
     }
 }
