@@ -633,7 +633,7 @@ namespace DopplerBeplic.Services.Classes
                 var message = errorResponse?.Message ?? string.Empty;
                 var statusCode = errorResponse?.HttpStatusCode ?? (int)HttpStatusCode.InternalServerError;
 
-                LogErrorMethod("GetUserPlan", response.Content ?? message);
+                LogErrorMethod($"GetUserPlan ({idExternal})", response.Content ?? message);
 
                 throw new BadHttpRequestException(message, statusCode);
             }
