@@ -49,6 +49,15 @@ public partial class IsOwnResourceAuthorizationHandler : AuthorizationHandler<Do
             return true;
         }
 
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+
+        if (routeData.Values.TryGetValue("idExternal", out var idExternal) && idExternal?.ToString() == GetTokenNameIdentifier(context.User))
+        {
+            // TODO: In case of using different public keys, for example Doppler and Relay,
+            // it is necessary to check token Issuer information, to validate right origin.
+            return true;
+        }
+
         return false;
     }
 

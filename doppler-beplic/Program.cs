@@ -54,6 +54,8 @@ builder.Services.ConfigureHttpJsonOptions(o =>
     o.SerializerOptions.IncludeFields = true;
 });
 
+builder.Services.AddCors();
+
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -93,6 +95,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors(policy => policy
+                .SetIsOriginAllowed(isOriginAllowed: _ => true)
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials());
 
 app.MapPost("/account", async Task<Results<Created<UserCreationResponse>, BadRequest<string>>> (
     IBeplicService beplicService,
@@ -339,7 +347,7 @@ app.MapGet("/customer/{idExternal}/conversations", async Task<Results<Ok<int?>, 
 })
 .WithName("GetConversationsByExternalId")
 .WithOpenApi()
-.RequireAuthorization(Policies.OnlySuperuser);
+.RequireAuthorization(Policies.OwnResourceOrSuperuser);
 
 app.Run();
 
