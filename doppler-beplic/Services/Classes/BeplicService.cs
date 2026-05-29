@@ -82,7 +82,8 @@ namespace DopplerBeplic.Services.Classes
                         data = new
                         {
                             idCustomer = 0,
-                            accessToken = string.Empty
+                            accessToken = string.Empty,
+                            userName = string.Empty
                         }
                     });
 
@@ -90,6 +91,7 @@ namespace DopplerBeplic.Services.Classes
                     result.Error = result.Success ? null : deserealizedResponse?.message;
                     result.CustomerId = deserealizedResponse?.data.idCustomer;
                     result.UserToken = deserealizedResponse?.data.accessToken;
+                    result.UserName = deserealizedResponse?.data.userName;
                 }
                 else
                 {
